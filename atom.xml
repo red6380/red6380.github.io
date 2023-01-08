@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Red6380</title>
+  
+  <subtitle>网安中的一只菜鸟</subtitle>
+  <link href="http://example.com/atom.xml" rel="self"/>
+  
+  <link href="http://example.com/"/>
+  <updated>2023-01-08T11:37:27.266Z</updated>
+  <id>http://example.com/</id>
+  
+  <author>
+    <name>Red6380</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Vulnhub系列之DC1靶场详解</title>
+    <link href="http://example.com/2020/05/01/dc1/"/>
+    <id>http://example.com/2020/05/01/dc1/</id>
+    <published>2020-04-30T16:00:00.000Z</published>
+    <updated>2023-01-08T11:37:27.266Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;环境&quot;&gt;&lt;a href=&quot;#环境&quot; class=&quot;headerlink&quot; title=&quot;环境&quot;&gt;&lt;/a&gt;环境&lt;/h1&gt;&lt;ol&gt;
+&lt;li&gt;DC-1靶场&lt;/li&gt;
+&lt;li&gt;VMware虚拟机&lt;/li&gt;
+&lt;li&gt;kali&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1</summary>
+        
+      
+    
+    
+    
+    <category term="靶场" scheme="http://example.com/categories/%E9%9D%B6%E5%9C%BA/"/>
+    
+    
+    <category term="靶场" scheme="http://example.com/tags/%E9%9D%B6%E5%9C%BA/"/>
+    
+  </entry>
+  
+</feed>
