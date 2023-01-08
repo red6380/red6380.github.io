@@ -4,8 +4,19 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Hello World, Red6380_ttile">
-    <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hex">
+    <meta name="keywords" content="vulnhub系列靶场之DC1, Red6380_ttile">
+    <meta name="description" content="
+TOC{:toc}
+
+环境
+DC-1靶场
+VMware虚拟机
+kali
+
+drupal 7.x漏洞拿flag1首先搭建好靶场。这次一次黑盒靶场测试，只能从虚拟机中查看DC1靶场的mac地址，从而查出目标靶机的IP。
+
+
+所以目标IP地址为">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -17,7 +28,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Hello World | Red6380_ttile</title>
+    <title>vulnhub系列靶场之DC1 | Red6380_ttile</title>
     <link rel="icon" type="image/png" href="/favicon.png">
     
 
@@ -334,12 +345,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/12.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/11.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Hello World</h1>
+                    <h1 class="description center-align post-title">vulnhub系列靶场之DC1</h1>
                 </div>
             </div>
         </div>
@@ -361,12 +372,25 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E9%9D%B6%E5%9C%BA-vulnhub/">
+                                <span class="chip bg-color">靶场  vulnhub</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/vulnhub/" class="post-category">
+                                vulnhub
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -375,7 +399,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2023-01-07
+                    2023-01-08
                 </div>
                 
 
@@ -396,19 +420,66 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+                <ul>
+<li>TOC<br>{:toc}</li>
+</ul>
+<h1 id="环境"><a href="#环境" class="headerlink" title="环境"></a><strong>环境</strong></h1><ol>
+<li>DC-1靶场</li>
+<li>VMware虚拟机</li>
+<li>kali</li>
+</ol>
+<h1 id="drupal-7-x漏洞拿flag1"><a href="#drupal-7-x漏洞拿flag1" class="headerlink" title="drupal 7.x漏洞拿flag1"></a><strong>drupal 7.x漏洞拿flag1</strong></h1><p>首先搭建好靶场。这次一次黑盒靶场测试，只能从虚拟机中查看DC1靶场的mac地址，从而查出目标靶机的IP。</p>
+<p><img src="./DC1/050401.png"></p>
+<p><img src="./DC1/050402.png"></p>
+<p>所以目标IP地址为192.168.31.184，直接上nmap进行目标全面扫描。</p>
+<p><img src="./DC1/050403.png"></p>
+<p>由nmap扫描可以知道，目标靶机开放了22,80,111,42875端口，看到端口号22想到ssh远程连接，端口号80想到web网页攻击。后面两个端口暂时想不到有什么用，所以先放在一般后面可能会用到。所以直接访问网页。</p>
+<p><img src="./DC1/050405.png"></p>
+<p>由网页可以明显看出本站是由使用<code>PHP</code>语言编写的开源内容管理系统<code>Drupal</code>搭建的，并且由<code>Wappalyzer</code>得知版本为7.X，所以直接使用<code>searchsploit</code>命令在漏洞库中搜索此版本是否有漏洞可以利用。</p>
+<p><img src="./DC1/050407.png"></p>
+<p>可以看到由许多可以利用的漏洞，所以我们选择最后一个远程代码执行漏洞，因为这个漏洞可以利用漏洞攻击神奇<code>metasploit</code>进行攻击。</p>
+<p><img src="./DC1/050408.png"></p>
+<p>直接使用模块，使用命令<code>info</code>可以查看漏洞的相关信息，也可以查看攻击模块需要设置的参数。根据要求设置参数。</p>
+<p><img src="./DC1/050409.png"></p>
+<p>根据要求只需要设置<code>RHOSTS</code>即目标靶场的IP，设置完成执行<code>run</code>命令即可进入<code>shell</code>环境。</p>
+<p><img src="./DC1/050410.png"></p>
+<p>由于得到的不是一个完整的<code>shell</code>环境，所以我们所以<code>pyhton</code>中的<code>pty</code>模块反弹一个完整的<code>shell</code>环境,即直接输入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -c &#x27;import pty;pty.spawn(&quot;/bin/bash&quot;)&#x27;</span><br></pre></td></tr></table></figure>
+<p>直接上命令，可以得到flag1</p>
+<h1 id="在目录中找配置文件拿flag2"><a href="#在目录中找配置文件拿flag2" class="headerlink" title="在目录中找配置文件拿flag2"></a><strong>在目录中找配置文件拿flag2</strong></h1><p>根据flag1.txt中的’Every good CMS needs a config file - and so do you.’（意思差不多：每个好的内容管理系统都需要一个配置文件，所以你应该怎么做）提示，所以直接从实名命令执行得到的目录里面找配置文件。</p>
+<p><img src="./DC1/050412.png"></p>
+<p>最终在<code>sites/default/default.setting.php</code>中找到的(不要问我怎么找到的，问就是不知道)(觉得可疑的目录和文件就一个一个试呗)<br>于是得到了flag2</p>
+<h1 id="改密码进网站拿flag2"><a href="#改密码进网站拿flag2" class="headerlink" title="改密码进网站拿flag2"></a><strong>改密码进网站拿flag2</strong></h1><p>根据flag2提示(提示内容大概意思是：爆破和目录扫描并不是唯一获得后台的方法(并且你需要访问权限)，下面这些认证信息你怎么使用)。<br>给出的是数据库的相关信息，所以我们直接本地登陆数据库。</p>
+<p><img src="./DC1/050415.png"></p>
+<p>查看表users中的内容可以知道用户名和密码。</p>
+<p><img src="./DC1/050416.png"></p>
+<p>但是一般加盐的密码是很难破解的，所以选择修改用户密码来解决。首先生成自定密码的加盐哈希值。回到网站的目录下执行<code>php scripts/password-hash.sh 密码</code>命令生成。</p>
+<p><img src="./DC1/050420.png"></p>
+<p>修改密码，并且确认是否修改完成</p>
+<p><img src="./DC1/050421.png"></p>
+<p>修改完成回到网页登陆，登陆成功</p>
+<p><img src="./DC1/050422.png"></p>
+<p><img src="./DC1/050423.png"></p>
+<p>得到flag3</p>
+<h1 id="ssh爆破拿flag4"><a href="#ssh爆破拿flag4" class="headerlink" title="ssh爆破拿flag4"></a><strong>ssh爆破拿flag4</strong></h1><p>从flag3中提示发现<code>passwd</code>,<code>shadow</code>所以查看根目录/etc下的这两个文件；</p>
+<p><img src="./DC1/050424.png"></p>
+<p><strong>/etc/shadow</strong>无法查看，权限不够，查看<strong>etc/passwd</strong>，发现目标靶机用户flag4,并且有/bin/bash，看到这想到了还有端口22，所以ssh连接。但是密码不知道所以只能用爆破神器<code>hydra</code>。<br>用kali自带密码字典，路径为**/usr/share/john/password.lst**,kali自带各种密码默认保存在**/usr/share/**下。</p>
+<p><img src="./DC1/050425.png"></p>
+<p><img src="./DC1/050426.png"></p>
+<p>爆出结果为’orange’，所以直接ssh连接，进入家目录查看发现flag4.</p>
+<p><img src="./DC1/050427.png"></p>
+<h1 id="提权拿最后的flag"><a href="#提权拿最后的flag" class="headerlink" title="提权拿最后的flag"></a><strong>提权拿最后的flag</strong></h1><p>根据提示需要得到root权限才能得到falg。</p>
+<p>liunx提权一般有四种提权方式：</p>
+<ol>
+<li>sudo提权，通过命令<code>sudo -l</code>查看是否有可提权的命令。</li>
+<li>suid提权，通过命令<code>find / -perm -4000 2&gt;/dev/null</code>查看是否具有root权限的命令</li>
+<li>系统版本内核提权。</li>
+<li>通过数据库提权。</li>
+</ol>
+<p><img src="./DC1/050428.png"></p>
+<p>发现<em>find</em>具有root权限。(哪些可以进行提权可以在网上查，提权用法可以临时查)<br>直接执行命令<code>find -exec /bin/sh \;</code>进行提权</p>
+<p><img src="./DC1/050431.png"></p>
+<p>提权完成，拿到最后的thefinalflag.txt.</p>
 
                 
             </div>
@@ -435,7 +506,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2023/01/07/hello-world/">http://example.com/2023/01/07/hello-world/</a>
+                    <a href="http://example.com/2023/01/08/DC1/">http://example.com/2023/01/08/DC1/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -472,7 +543,11 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/%E9%9D%B6%E5%9C%BA-vulnhub/">
+                                    <span class="chip bg-color">靶场  vulnhub</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -549,17 +624,18 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2023/01/07/first-md/">
+                <a href="/2023/01/08/DC1/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="first.md">
+                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="vulnhub系列靶场之DC1">
                         
-                        <span class="card-title">first.md</span>
+                        <span class="card-title">vulnhub系列靶场之DC1</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -569,16 +645,29 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-01-07
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-01-08
+                            </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            Red6380
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/vulnhub/" class="post-category">
+                                    vulnhub
+                                </a>
+                            
                             
                         </span>
                     </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E9%9D%B6%E5%9C%BA-vulnhub/">
+                        <span class="chip bg-color">靶场  vulnhub</span>
+                    </a>
+                    
                 </div>
                 
             </div>
@@ -590,13 +679,13 @@
                 本篇&nbsp;<i class="far fa-dot-circle"></i>
             </div>
             <div class="card">
-                <a href="/2023/01/07/hello-world/">
+                <a href="/2023/01/08/DC1/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
+                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="vulnhub系列靶场之DC1">
                         
-                        <span class="card-title">Hello World</span>
+                        <span class="card-title">vulnhub系列靶场之DC1</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -607,17 +696,29 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-01-07
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-01-08
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            Red6380
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/vulnhub/" class="post-category">
+                                    vulnhub
+                                </a>
+                            
                             
                         </span>
                     </div>
                 </div>
 
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E9%9D%B6%E5%9C%BA-vulnhub/">
+                        <span class="chip bg-color">靶场  vulnhub</span>
+                    </a>
+                    
+                </div>
                 
             </div>
         </div>
