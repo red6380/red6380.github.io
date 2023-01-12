@@ -4,8 +4,15 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="标签: 靶场, Red6380">
-    <meta name="description" content="忙的时候要有空闲的心情，闲的时候要有忙碌的感受。生活是跷跷板，不是上便是下；人生是度量衡，不是高便是低">
+    <meta name="keywords" content="Vulnhub系列之DC5靶场详解, Red6380">
+    <meta name="description" content="环境
+vulhub系列之DC5靶场
+VMware虚拟机
+kali  
+
+文件包含突破点根据目标靶机MAC地址得到靶机IP为192.168.43.160，直接上nmap扫描。    
+
+发现开放了80、111、36936端口，暂时只知道端口8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -17,7 +24,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>标签: 靶场 | Red6380</title>
+    <title>Vulnhub系列之DC5靶场详解 | Red6380</title>
     <link rel="icon" type="image/png" href="/favicon.png">
     
 
@@ -333,311 +340,500 @@
 
 </header>
 
-    <div class="bg-cover pd-header about-cover">
-    <div class="container">
-    <div class="row">
-    <div class="col s10 offset-s1 m8 offset-m2 l8 offset-l2">
-        <div class="brand">
-            <div class="title center-align">
-                
-                网安中的一只菜鸟
-                
-            </div>
+    
 
-            <div class="description center-align">
-                
-                <span id="subtitle"></span>
-                <script src="/libs/typed/typed.js"></script>
-                <script>
-                    var typed = new Typed("#subtitle", {
-                        strings: [ 
-                            
-                                "从来没有真正的绝境, 只有心灵的迷途",
-                            
-                                "Never really desperate, only the lost of the soul",
-                            
-                        ],
-                        startDelay: 300,
-                        typeSpeed: 100,
-                        loop: true,
-                        backSpeed: 50,
-                        showCursor: true
-                    });
-                </script>
-                
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/12.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">Vulnhub系列之DC5靶场详解</h1>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+
+
+
+<main class="post-container content">
+
+    
+    <div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E9%9D%B6%E5%9C%BA/">
+                                <span class="chip bg-color">靶场</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/%E9%9D%B6%E5%9C%BA/" class="post-category">
+                                靶场
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2021-05-10
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    884
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    3 分
+                </div>
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.min.css">
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h1><ol>
+<li>vulhub系列之DC5靶场</li>
+<li>VMware虚拟机</li>
+<li>kali  </li>
+</ol>
+<h1 id="文件包含突破点"><a href="#文件包含突破点" class="headerlink" title="文件包含突破点"></a>文件包含突破点</h1><p>根据目标靶机MAC地址得到靶机IP为192.168.43.160，直接上nmap扫描。    </p>
+<p><img src="https://img-blog.csdnimg.cn/20210513160648929.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p>发现开放了80、111、36936端口，暂时只知道端口80是web站点，另外两个端口未知。其他无头绪，直接访问网页。   </p>
+<p><img src="https://img-blog.csdnimg.cn/2021051316071075.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p>进入网页，一堆的英文，看了一下内容发现没有什么用，只有Contact页面有几个输入点，经过SQL注入和XSS测试，没有发现相关漏洞。<br>卡了半天没有找到什么突破点了，所以尝试爆破目标网站的目录看是否有没发现的页面。用kaili自带目录爆破工具dirbuster。<br>命令行输入</p>
+<pre class="line-numbers language-none"><code class="language-none">dirbuster -u http://192.168.43.160<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>输入命令后会自动进入软件页面。默认字典在<code>/usr/share/dirbuster/wordlists</code>目录下。     </p>
+<p><img src="https://img-blog.csdnimg.cn/20210513160738345.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>该目录下有几个字典，先选择小字典进行爆破，没有结果就进行选择其他字典爆破。    </p>
+<p><img src="https://img-blog.csdnimg.cn/20210513160751884.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p>爆破结果发现了footer.php目录。    </p>
+<p><img src="https://img-blog.csdnimg.cn/20210513160803711.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p>进入footer.php目录发现只有几个字符，但是每次刷新页面后面的年份都会变，想到了之前页面下也有类似的字符。    </p>
+<p><img src="https://img-blog.csdnimg.cn/20210513160814787.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p>经过寻找发现只有thankyou.php下面的字符年份页面刷新会变，其他页面的年份不会变，所以想到在thankyou.php页面下存在文件包含。    </p>
+<p><img src="https://img-blog.csdnimg.cn/20210513160825704.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p>经过几个常见文件包含的参数测试，发现文件包含的参数是file,并且可以访问包含页面。(可以用参数字典进行爆破寻找，毕竟真实环境中参数不会那么简单)    </p>
+<p><img src="https://img-blog.csdnimg.cn/20210513160836426.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p>发现不用绕过就可以直接访问根目录下的文件，但是访问/etc/passwd文件没有收获，其他目录下也没有收获。<br>这时想到了从前面可以知道这是一个nginx站点，nginx日志默认字典路径为/var/log/nginx/access.log。所以想到了通过日志文件写入小马再通过菜刀连接。</p>
+<p><img src="https://img-blog.csdnimg.cn/20210513160850125.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p>抓包写入php小马。    </p>
+<p><img src="https://img-blog.csdnimg.cn/20210513160913339.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p>访问日志，发现成功写入小马。(由于之前进行目录爆破导致日志文件加载有点慢)    </p>
+<p><img src="https://img-blog.csdnimg.cn/20210513160929972.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p>连接成功。<br>反弹shell到kali上。 </p>
+<h1 id="screen提权"><a href="#screen提权" class="headerlink" title="screen提权"></a>screen提权</h1><p><img src="https://img-blog.csdnimg.cn/20210513160951506.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p>查看是否有提权的突破点，发现有个/bin/screen-4.5.0具有root权限。因为直接告诉我们版本了，所以直接去漏洞库查看是否有可利用的脚本。  </p>
+<p><img src="https://img-blog.csdnimg.cn/20210513161004132.png"></p>
+<p>发现有本地提权的利用脚本，打开41154.sh文件查看。  </p>
+<p><img src="https://img-blog.csdnimg.cn/20210513161017147.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p>查看文件可以知道，脚本文件需要分成3个步骤完成。</p>
+<p>第一步：将第一部分代码写入libhax.c文件中，再执行相应命令生成libhax.so文件。最后删除libhax.c文件。</p>
+<p><img src="https://img-blog.csdnimg.cn/20210513161033949.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p>第二步：将第二部分的代码写入rootshell.c文件并执行命令生成rootshell文件，最后删除rootshell.c文件。   </p>
+<p><img src="https://img-blog.csdnimg.cn/20210513161046238.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p>第三步：将最后一部分代码写入dc5.sh文件中。需要注意的是，需要在文件开头写入<code>#!/bin/bash</code>表示执行环境。最后保存是需要输入<code>:set ff=unix</code>是为了防止脚本的格式错误。    </p>
+<p><img src="https://img-blog.csdnimg.cn/20210513161059240.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p><img src="https://img-blog.csdnimg.cn/20210513161116108.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p>完成3个步骤后之间把三个文件上传至靶机的/tmp文件下，然后执行./dc5即可提权。   </p>
+<p><img src="https://img-blog.csdnimg.cn/20210513161136958.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p>我是用<code>scp</code>命令直接将kali中的文件夹复制到目标靶机上的。复制成功进入文件夹。记得需要给dc5.sh脚本赋予权限。  </p>
+<p><img src="https://img-blog.csdnimg.cn/20210513161155497.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p>得到flag.</p>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">Red6380</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://example.com/2021/05/10/dc5/">http://example.com/2021/05/10/dc5/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">Red6380</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E9%9D%B6%E5%9C%BA/">
+                                    <span class="chip bg-color">靶场</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
-    // 每天切换 banner 图.  Switch banner image every day.
-    var bannerUrl = "/medias/banner/" + new Date().getDay() + '.jpg';
-    $('.bg-cover').css('background-image', 'url(' + bannerUrl + ')');
+    $(function () {
+        $('.tabs').tabs();
+    });
 </script>
 
-
+            
+        </div>
     </div>
-</div>
-
-<main class="content">
 
     
 
-<div id="tags" class="container chip-container">
-    <div class="card">
-        <div class="card-content">
-            <div class="tag-title center-align">
-                <i class="fas fa-tags"></i>&nbsp;&nbsp;文章标签
-            </div>
-            <div class="tag-chips">
-                
-                
-                <a href="/tags/%E9%9D%B6%E5%9C%BA/" title="靶场: 7">
-                    <span class="chip center-align waves-effect waves-light
-                             chip-active "
-                            data-tagname="靶场" style="background-color: #F9EBEA;">靶场
-                        <span class="tag-length">7</span>
-                    </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2021/05/27/dc6/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="Vulnhub系列之DC6靶场详解">
+                        
+                        <span class="card-title">Vulnhub系列之DC6靶场详解</span>
+                    </div>
                 </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-05-27
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E9%9D%B6%E5%9C%BA/" class="post-category">
+                                    靶场
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E9%9D%B6%E5%9C%BA/">
+                        <span class="chip bg-color">靶场</span>
+                    </a>
+                    
+                </div>
                 
             </div>
         </div>
-    </div>
-</div>
-
-    
-
-    <article id="articles" class="container articles">
-        <div class="row tags-posts">
-            
-            
-            <div class="article tag-post col s12 m6 l4" data-tags="靶场" data-aos="fade-up">
-                <div class="card">
-                    <a href="/2021/05/30/dc7/">
-                        <div class="card-image tag-image">
-                            
-                            
-                            <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="Vulnhub系列之DC7靶场详解">
-                            
-                            <span class="card-title">Vulnhub系列之DC7靶场详解</span>
-                        </div>
-                    </a>
-                    <div class="card-content article-content">
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-05-30
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E9%9D%B6%E5%9C%BA/" class="post-category">
-                                靶场
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-                </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
-            
-            
-            <div class="article tag-post col s12 m6 l4" data-tags="靶场" data-aos="fade-up">
-                <div class="card">
-                    <a href="/2021/05/27/dc6/">
-                        <div class="card-image tag-image">
-                            
-                            
-                            <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="Vulnhub系列之DC6靶场详解">
-                            
-                            <span class="card-title">Vulnhub系列之DC6靶场详解</span>
-                        </div>
-                    </a>
-                    <div class="card-content article-content">
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-05-27
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E9%9D%B6%E5%9C%BA/" class="post-category">
-                                靶场
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
+            <div class="card">
+                <a href="/2021/05/08/dc4/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="Vulnhub系列之DC4靶场详解">
+                        
+                        <span class="card-title">Vulnhub系列之DC4靶场详解</span>
                     </div>
-                </div>
-            </div>
-            
-            
-            <div class="article tag-post col s12 m6 l4" data-tags="靶场" data-aos="fade-up">
-                <div class="card">
-                    <a href="/2021/05/10/dc5/">
-                        <div class="card-image tag-image">
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
                             
-                            
-                            <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Vulnhub系列之DC5靶场详解">
-                            
-                            <span class="card-title">Vulnhub系列之DC5靶场详解</span>
-                        </div>
-                    </a>
-                    <div class="card-content article-content">
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-05-10
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E9%9D%B6%E5%9C%BA/" class="post-category">
-                                靶场
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
+                        
                     </div>
-                </div>
-            </div>
-            
-            
-            <div class="article tag-post col s12 m6 l4" data-tags="靶场" data-aos="fade-up">
-                <div class="card">
-                    <a href="/2021/05/08/dc4/">
-                        <div class="card-image tag-image">
-                            
-                            
-                            <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="Vulnhub系列之DC4靶场详解">
-                            
-                            <span class="card-title">Vulnhub系列之DC4靶场详解</span>
-                        </div>
-                    </a>
-                    <div class="card-content article-content">
-                        <div class="publish-info">
+                    <div class="publish-info">
                             <span class="publish-date">
                                 <i class="far fa-clock fa-fw icon-date"></i>2021-05-08
                             </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E9%9D%B6%E5%9C%BA/" class="post-category">
-                                靶场
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E9%9D%B6%E5%9C%BA/" class="post-category">
+                                    靶场
                                 </a>
-                                
-                                
-                            </span>
-                        </div>
+                            
+                            
+                        </span>
                     </div>
                 </div>
-            </div>
-            
-            
-            <div class="article tag-post col s12 m6 l4" data-tags="靶场" data-aos="fade-up">
-                <div class="card">
-                    <a href="/2021/05/07/dc3/">
-                        <div class="card-image tag-image">
-                            
-                            
-                            <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="Vulnhub系列之DC3靶场详解">
-                            
-                            <span class="card-title">Vulnhub系列之DC3靶场详解</span>
-                        </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E9%9D%B6%E5%9C%BA/">
+                        <span class="chip bg-color">靶场</span>
                     </a>
-                    <div class="card-content article-content">
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-05-07
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E9%9D%B6%E5%9C%BA/" class="post-category">
-                                靶场
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
+                    
                 </div>
+                
             </div>
-            
-            
-            <div class="article tag-post col s12 m6 l4" data-tags="靶场" data-aos="fade-up">
-                <div class="card">
-                    <a href="/2021/05/05/dc2/">
-                        <div class="card-image tag-image">
-                            
-                            
-                            <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="Vulnhub系列之DC2靶场详解">
-                            
-                            <span class="card-title">Vulnhub系列之DC2靶场详解</span>
-                        </div>
-                    </a>
-                    <div class="card-content article-content">
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-05-05
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E9%9D%B6%E5%9C%BA/" class="post-category">
-                                靶场
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            
-            <div class="article tag-post col s12 m6 l4" data-tags="靶场" data-aos="fade-up">
-                <div class="card">
-                    <a href="/2021/05/04/dc1/">
-                        <div class="card-image tag-image">
-                            
-                            
-                            <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="Vulnhub系列之DC1靶场详解">
-                            
-                            <span class="card-title">Vulnhub系列之DC1靶场详解</span>
-                        </div>
-                    </a>
-                    <div class="card-content article-content">
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-05-04
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E9%9D%B6%E5%9C%BA/" class="post-category">
-                                靶场
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
         </div>
-    </article>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+
+  <!-- 是否加载使用自带的 prismjs. -->
+  <script type="text/javascript" src="/libs/prism/prism.min.js"></script>
+
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h1,h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
 </main>
 
 
