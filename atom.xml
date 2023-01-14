@@ -73,6 +73,31 @@
   </entry>
   
   <entry>
+    <title>test图片</title>
+    <link href="http://example.com/2021/05/27/test/"/>
+    <id>http://example.com/2021/05/27/test/</id>
+    <published>2021-05-27T15:14:28.000Z</published>
+    <updated>2023-01-14T07:12:27.626Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;img src=&quot;/2021/05/27/test/05/27/test/2023-01-14_150534.png&quot; class</summary>
+        
+      
+    
+    
+    
+    <category term="靶场" scheme="http://example.com/categories/%E9%9D%B6%E5%9C%BA/"/>
+    
+    
+    <category term="靶场" scheme="http://example.com/tags/%E9%9D%B6%E5%9C%BA/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Vulnhub系列之DC5靶场详解</title>
     <link href="http://example.com/2021/05/10/dc5/"/>
     <id>http://example.com/2021/05/10/dc5/</id>

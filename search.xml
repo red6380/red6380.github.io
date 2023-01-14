@@ -54,6 +54,31 @@
     
     
     <entry>
+      <title>test图片</title>
+      <link href="/2021/05/27/test/"/>
+      <url>/2021/05/27/test/</url>
+      
+        <content type="html"><![CDATA[<img src="/2021/05/27/test/05/27/test/2023-01-14_150534.png" class title="test图片">]]></content>
+      
+      
+      <categories>
+          
+          <category> 靶场 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 靶场 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Vulnhub系列之DC5靶场详解</title>
       <link href="/2021/05/10/dc5/"/>
       <url>/2021/05/10/dc5/</url>
