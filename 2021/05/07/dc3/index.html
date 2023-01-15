@@ -375,39 +375,39 @@ flag只能从VM虚拟机得到目标靶场的MAC地址，从而得到目标靶�
 <li>kali</li>
 </ol>
 <h1 id="flag"><a href="#flag" class="headerlink" title="flag"></a><strong>flag</strong></h1><p>只能从VM虚拟机得到目标靶场的MAC地址，从而得到目标靶场的IP地址，即192.168.43.50.直接上nmap进行扫描。</p>
-<p><img src="https://img-blog.csdnimg.cn/20210508181418389.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p><img src="/2021/05/07/dc3/050701.png"></p>
 <p>由nmap结果可以知道，目标靶场只开放了80端口。所以直接访问网页。</p>
-<p><img src="https://img-blog.csdnimg.cn/20210508181435430.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p><img src="/2021/05/07/dc3/050702.png"></p>
 <p>根据提示只有一个flag，并且需要拿到root权限才能得到。并且可以知道网站的CMS系统是Joomla。kali自带Joomla的扫描命令即Joomscan.</p>
 <pre class="line-numbers language-none"><code class="language-none">joomscan -u 192.168.43.50<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-<p><img src="https://img-blog.csdnimg.cn/20210508181447321.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p><img src="/2021/05/07/dc3/050703.png">   </p>
 <p>从扫描结果可以得到Joomla版本为3.7.0，并且可以扫描出一下网站目录。<br>直接在漏洞库搜索是否有可利用漏洞。   </p>
-<p>   <img src="https://img-blog.csdnimg.cn/20210508181502936.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p>   <img src="/2021/05/07/dc3/050705.png">    </p>
 <p>发现两个可利用漏洞，一个sql注入，一个XSS，所以SQL注入比较合适，直接查看漏洞利用文本。(漏洞默认路径为/usr/share/exploitdb/exploits/给出的路径)<br>根据利用文本给出的sqlmap利用方式直接上工具sqlmap。</p>
-<p><img src="https://img-blog.csdnimg.cn/20210508181515592.png"></p>
-<p><img src="https://img-blog.csdnimg.cn/20210508181526175.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p><img src="/2021/05/07/dc3/050706.png">    </p>
+<p><img src="/2021/05/07/dc3/050707.png"></p>
 <p>利用成功，爆出5个数据库，继续爆破joomladb中的表、字段。可以爆出表#__users,爆出字段username，password.</p>
-<p><img src="https://img-blog.csdnimg.cn/20210508181538864.png"></p>
+<p><img src="/2021/05/07/dc3/050708.png"></p>
 <p>需要对密码继续解密，将密码复制到新建文件pd.txt中，执行下面命令解密：</p>
 <pre class="line-numbers language-none"><code class="language-none">john pd.txt --wordlist=/usr/share/wordlist/rockyou.txt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-<p><img src="https://img-blog.csdnimg.cn/20210508181549515.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p><img src="/2021/05/07/dc3/050709.png"></p>
 <p>因为之前已经解密过，所以需要额外加一个命令看结果，之前没有解密过的可以直接出答案。解密结果为snoopy。</p>
-<p><img src="https://img-blog.csdnimg.cn/20210508181602332.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p><img src="/2021/05/07/dc3/050710.png"></p>
 <p>成功登陆进去。<br>其他思路没有，所以只能查看网页内容，在首页Templates下发现了线索  </p>
-<p><img src="https://img-blog.csdnimg.cn/20210508181618173.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
-<p><img src="https://img-blog.csdnimg.cn/20210508181630321.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p><img src="/2021/05/07/dc3/050714.png">   </p>
+<p><img src="/2021/05/07/dc3/050715.png">   </p>
 <p>进入protostar模块在index.php写入一句话木马，直接<code>蚁剑</code>连接。  </p>
-<p><img src="https://img-blog.csdnimg.cn/20210508181642188.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p><img src="/2021/05/07/dc3/050716.png">    </p>
 <p>连接成功。查看文件内容，没有什么发现，直接在进入交互模式。</p>
-<p><img src="https://img-blog.csdnimg.cn/20210508181654360.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p><img src="/2021/05/07/dc3/050717.png">       </p>
 <p>没发现什么办法提权，所以只能看看可不可以内核版本提权，所以漏洞库搜索看看有没有相关漏洞利用。</p>
-<p><img src="https://img-blog.csdnimg.cn/20210508181705719.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p><img src="/2021/05/07/dc3/050718.png">     </p>
 <p>发现可以提权的漏洞利用，查看利用方式。</p>
-<p><img src="https://img-blog.csdnimg.cn/20210508181722169.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p><img src="/2021/05/07/dc3/050719.png">  </p>
 <p>需要下载利用工具，最后一行给出了<a target="_blank" rel="noopener" href="https://github.com/offensive-security/exploitdb-bin-sploits/raw/master/bin-sploits/39772.zip">下载地址</a>(国内网络可能下载不了)。</p>
-<p><img src="https://img-blog.csdnimg.cn/20210508181733817.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p><img src="/2021/05/07/dc3/050801.png">   </p>
 <p>下载完成，有两个压缩包，通过<code>蚁剑</code>将这’._exploit.tar’上传至靶机即可。解压———执行compile.sh——执行doubleput——提权成功。<br>成功拿到flag.</p>
 
                 

