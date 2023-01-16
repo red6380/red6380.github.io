@@ -456,7 +456,7 @@ mysql建议直接使用5.5.*版本的，高版本的会因">
 <p>​    从代码处可知，未对请求体校验Referer字段，也无token机制。因此可造成CSRF。</p>
 <p><img src="/2023/01/14/inxedu/23.png"></p>
 <h2 id="前台文件上传getshell"><a href="#前台文件上传getshell" class="headerlink" title="前台文件上传getshell"></a>前台文件上传getshell</h2><p>​    前置知识点</p>
-<p>​    jspx：以xml语法来书写jsp的文件，自定义的映射类型，jspx=jsp+xml；jspx文件本身符合xml的规范，但是它本质又是一个jsp文件，使用在所有jsp里面能够做到的事情在jspx里同样可以做到。</p>
+<p>​    jspx：以xml语法来书写jsp的文件，自定义的映射类型，jspx=jsp+xml；jspx文件本身符合xml的规范，但是它本质又是一个jsp文件，所以在所有jsp里面能够做到的事情在jspx里同样可以做到。</p>
 <p>​    tomcat的web.xml中org.apache.jasper.servlet.Jspservlet配置关于jsp服务的解析，默认是都会解析jsp和jspx。</p>
 <p><img src="/2023/01/14/inxedu/26.png"></p>
 <p>​    此处漏洞发生在前台用户上传头像处。</p>
