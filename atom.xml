@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2023-01-16T15:14:17.709Z</updated>
+  <updated>2023-02-06T15:40:51.348Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -17,11 +17,44 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>https与双向认证</title>
+    <link href="http://example.com/2023/02/05/https/"/>
+    <id>http://example.com/2023/02/05/https/</id>
+    <published>2023-02-05T07:04:27.000Z</published>
+    <updated>2023-02-06T15:40:51.348Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;https基础知识&quot;&gt;&lt;a href=&quot;#https基础知识&quot; class=&quot;headerlink&quot; title=&quot;https基础知识&quot;&gt;&lt;/a&gt;https基础知识&lt;/h1&gt;&lt;p&gt;​        HTTPS 协议是由HTTP 加上TLS/SSL</summary>
+        
+      
+    
+    
+    
+    <category term="https" scheme="http://example.com/categories/https/"/>
+    
+    <category term="协议" scheme="http://example.com/categories/https/%E5%8D%8F%E8%AE%AE/"/>
+    
+    <category term="证书" scheme="http://example.com/categories/https/%E5%8D%8F%E8%AE%AE/%E8%AF%81%E4%B9%A6/"/>
+    
+    
+    <category term="https" scheme="http://example.com/tags/https/"/>
+    
+    <category term="协议" scheme="http://example.com/tags/%E5%8D%8F%E8%AE%AE/"/>
+    
+    <category term="证书" scheme="http://example.com/tags/%E8%AF%81%E4%B9%A6/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Java代码审计项目--indedu因酷在线教育开源系统</title>
     <link href="http://example.com/2023/01/14/inxedu/"/>
     <id>http://example.com/2023/01/14/inxedu/</id>
     <published>2023-01-13T16:00:00.000Z</published>
-    <updated>2023-01-16T15:14:17.709Z</updated>
+    <updated>2023-01-28T13:58:37.454Z</updated>
     
     
       
