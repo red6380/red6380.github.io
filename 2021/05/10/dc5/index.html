@@ -12,7 +12,8 @@ kali
 
 文件包含突破点根据目标靶机MAC地址得到靶机IP为192.168.43.160，直接上nmap扫描。    
     
-发现开放了80、111、36936端口，暂时只知">
+
+发现开放了80、111、36936端口，暂时只">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -375,47 +376,67 @@ kali
 <li>kali  </li>
 </ol>
 <h1 id="文件包含突破点"><a href="#文件包含突破点" class="headerlink" title="文件包含突破点"></a><strong>文件包含突破点</strong></h1><p>根据目标靶机MAC地址得到靶机IP为192.168.43.160，直接上nmap扫描。    </p>
-<p><img src="/2021/05/10/dc5/051101.png">    </p>
+<img src="/2021/05/10/dc5/051101.png" class="">    
+
 <p>发现开放了80、111、36936端口，暂时只知道端口80是web站点，另外两个端口未知。其他无头绪，直接访问网页。   </p>
-<p><img src="/2021/05/10/dc5/051102.png">     </p>
+<img src="/2021/05/10/dc5/051102.png" class="">     
+
 <p>进入网页，一堆的英文，看了一下内容发现没有什么用，只有Contact页面有几个输入点，经过SQL注入和XSS测试，没有发现相关漏洞。<br>卡了半天没有找到什么突破点了，所以尝试爆破目标网站的目录看是否有没发现的页面。用kaili自带目录爆破工具dirbuster。<br>命令行输入</p>
 <pre class="line-numbers language-none"><code class="language-none">dirbuster -u http://192.168.43.160<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>输入命令后会自动进入软件页面。默认字典在<code>/usr/share/dirbuster/wordlists</code>目录下。     </p>
-<p><img src="/2021/05/10/dc5/051103.png">    </p>
+<img src="/2021/05/10/dc5/051103.png" class="">    
+
 <p>该目录下有几个字典，先选择小字典进行爆破，没有结果就进行选择其他字典爆破。    </p>
-<p><img src="/2021/05/10/dc5/051104.png">   </p>
+<img src="/2021/05/10/dc5/051104.png" class="">   
+
 <p>爆破结果发现了footer.php目录。    </p>
-<p><img src="/2021/05/10/dc5/051105.png">   </p>
+<img src="/2021/05/10/dc5/051105.png" class="">   
+
 <p>进入footer.php目录发现只有几个字符，但是每次刷新页面后面的年份都会变，想到了之前页面下也有类似的字符。    </p>
-<p><img src="/2021/05/10/dc5/051106.png">    </p>
+<img src="/2021/05/10/dc5/051106.png" class="">    
+
 <p>经过寻找发现只有thankyou.php下面的字符年份页面刷新会变，其他页面的年份不会变，所以想到在thankyou.php页面下存在文件包含。    </p>
-<p><img src="/2021/05/10/dc5/051107.png">    </p>
+<img src="/2021/05/10/dc5/051107.png" class="">    
+
 <p>经过几个常见文件包含的参数测试，发现文件包含的参数是file,并且可以访问包含页面。(可以用参数字典进行爆破寻找，毕竟真实环境中参数不会那么简单)    </p>
-<p><img src="/2021/05/10/dc5/051108.png">  </p>
+<img src="/2021/05/10/dc5/051108.png" class="">  
+
 <p>发现不用绕过就可以直接访问根目录下的文件，但是访问/etc/passwd文件没有收获，其他目录下也没有收获。<br>这时想到了从前面可以知道这是一个nginx站点，nginx日志默认字典路径为/var/log/nginx/access.log。所以想到了通过日志文件写入小马再通过菜刀连接。</p>
-<p><img src="/2021/05/10/dc5/051111.png">    </p>
+<img src="/2021/05/10/dc5/051111.png" class="">    
+
 <p>抓包写入php小马。    </p>
-<p><img src="/2021/05/10/dc5/051112.png">     </p>
+<img src="/2021/05/10/dc5/051112.png" class="">     
+
 <p>访问日志，发现成功写入小马。(由于之前进行目录爆破导致日志文件加载有点慢)    </p>
-<p><img src="/2021/05/10/dc5/051113.png">  </p>
+<img src="/2021/05/10/dc5/051113.png" class="">  
+
 <p>连接成功。<br>反弹shell到kali上。 </p>
-<h1 id="screen提权"><a href="#screen提权" class="headerlink" title="screen提权"></a><strong>screen提权</strong></h1><p><img src="/2021/05/10/dc5/051301.png">    </p>
+<h1 id="screen提权"><a href="#screen提权" class="headerlink" title="screen提权"></a><strong>screen提权</strong></h1><img src="/2021/05/10/dc5/051301.png" class="">    
+
 <p>查看是否有提权的突破点，发现有个/bin/screen-4.5.0具有root权限。因为直接告诉我们版本了，所以直接去漏洞库查看是否有可利用的脚本。  </p>
-<p><img src="/2021/05/10/dc5/051302.png">    </p>
+<img src="/2021/05/10/dc5/051302.png" class="">    
+
 <p>发现有本地提权的利用脚本，打开41154.sh文件查看。  </p>
-<p><img src="/2021/05/10/dc5/051303.png">    </p>
+<img src="/2021/05/10/dc5/051303.png" class="">    
+
 <p>查看文件可以知道，脚本文件需要分成3个步骤完成。</p>
 <p>第一步：将第一部分代码写入libhax.c文件中，再执行相应命令生成libhax.so文件。最后删除libhax.c文件。</p>
-<p><img src="/2021/05/10/dc5/051304.png">    </p>
+<img src="/2021/05/10/dc5/051304.png" class="">    
+
 <p>第二步：将第二部分的代码写入rootshell.c文件并执行命令生成rootshell文件，最后删除rootshell.c文件。   </p>
-<p><img src="/2021/05/10/dc5/051305.png">    </p>
+<img src="/2021/05/10/dc5/051305.png" class="">    
+
 <p>第三步：将最后一部分代码写入dc5.sh文件中。需要注意的是，需要在文件开头写入<code>#!/bin/bash</code>表示执行环境。最后保存是需要输入<code>:set ff=unix</code>是为了防止脚本的格式错误。    </p>
-<p><img src="/2021/05/10/dc5/051307.png">    </p>
-<p><img src="/2021/05/10/dc5/051306.png">   </p>
+<img src="/2021/05/10/dc5/051307.png" class="">    
+
+<img src="/2021/05/10/dc5/051306.png" class="">   
+
 <p>完成3个步骤后之间把三个文件上传至靶机的/tmp文件下，然后执行./dc5即可提权。   </p>
-<p><img src="/2021/05/10/dc5/051308.png">     </p>
+<img src="/2021/05/10/dc5/051308.png" class="">     
+
 <p>我是用<code>scp</code>命令直接将kali中的文件夹复制到目标靶机上的。复制成功进入文件夹。记得需要给dc5.sh脚本赋予权限。  </p>
-<p><img src="/2021/05/10/dc5/051309.png">   </p>
+<img src="/2021/05/10/dc5/051309.png" class="">   
+
 <p>得到flag.</p>
 
                 

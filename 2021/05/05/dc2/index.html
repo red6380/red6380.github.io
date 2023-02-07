@@ -11,7 +11,9 @@ VMware虚拟机
 kali
 
 直接更改域名解析进网站拿flag1根据目标靶场的MAC地址得出IP为：192.168.31.182，直接上nmap扫描。
-可以发现开放了80端口，网页服务器但是可以看出做了域名解析，所以需">
+
+
+可以发现开放了80端口，网页服务器但是可以看出做了域名解析，所">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -373,35 +375,46 @@ kali
 <li>VMware虚拟机</li>
 <li>kali</li>
 </ol>
-<h1 id="直接更改域名解析进网站拿flag1"><a href="#直接更改域名解析进网站拿flag1" class="headerlink" title="直接更改域名解析进网站拿flag1"></a><strong>直接更改域名解析进网站拿flag1</strong></h1><p>根据目标靶场的MAC地址得出IP为：192.168.31.182，直接上<code>nmap</code>扫描。<br><img src="/2021/05/05/dc2/050501.png"></p>
+<h1 id="直接更改域名解析进网站拿flag1"><a href="#直接更改域名解析进网站拿flag1" class="headerlink" title="直接更改域名解析进网站拿flag1"></a><strong>直接更改域名解析进网站拿flag1</strong></h1><p>根据目标靶场的MAC地址得出IP为：192.168.31.182，直接上<code>nmap</code>扫描。</p>
+<img src="/2021/05/05/dc2/050501.png" class="">
+
 <p>可以发现开放了80端口，网页服务器但是可以看出做了域名解析，所以需要在本地即kali的配置文件**/etc/hosts<strong>文件写入<code>192.168.31.182   dc-2</code>即可完成本地域名解析。还可以看出网站是由</strong>WordPress**内容管理系统搭建的。<br>还开放了7744端口，可以知道使用协议是ssh，所以可以远程连接。</p>
-<p><img src="/2021/05/05/dc2/050502.png"></p>
+<img src="/2021/05/05/dc2/050502.png" class="">
+
 <p>直接访问网站可以找到flag1</p>
 <h1 id="爆破用户进后台拿flag2"><a href="#爆破用户进后台拿flag2" class="headerlink" title="爆破用户进后台拿flag2"></a><strong>爆破用户进后台拿flag2</strong></h1><p>查看flag1中的内容，<code>cewl</code>是一个网页关键字抓取工具，<code>WordPress</code>有一个kali自带扫描工具<strong>wpscan</strong>可以爆破网站的用户名，所以想到了用关键字作为密码继续进行爆破。</p>
 <p><code>wpscan --url dc-2 -e u</code>可以查看网站用户，得出结果有三个用户<strong>admin</strong>,<strong>jerry</strong>,<strong>tom</strong>,将这三个用户保存在us.txt文件中</p>
 <p><code>cewl dc-2 -w pds.txt</code>将网站首页下的关键词生成密码字典pds.txt.</p>
 <p><code>wpscan --url dc-2 -U us.txt -P pds.txt</code>爆破口令。</p>
-<p><img src="/2021/05/05/dc2/050504.png"></p>
+<img src="/2021/05/05/dc2/050504.png" class="">
+
 <p>爆破出两个口令。<code>WordPrss</code>默认后台路径为<strong>wp-admin</strong>.登陆jerry/adipiscing直接发现flag2.</p>
-<p><img src="/2021/05/05/dc2/050505.png"></p>
+<img src="/2021/05/05/dc2/050505.png" class="">
+
+
 <h1 id="登陆ssh-绕过rbash限制拿flag3"><a href="#登陆ssh-绕过rbash限制拿flag3" class="headerlink" title="登陆ssh,绕过rbash限制拿flag3"></a><strong>登陆ssh,绕过rbash限制拿flag3</strong></h1><p>根据提示不能从<code>WordPrss</code>上面找到捷径，登陆tom也没有发现什么，这是时想到了还有7744端口，因为它是ssh协议所以直接尝试ssh连接。由于端口号不是22，所以需要用<code>-p 7744</code>指定端口号。</p>
-<p><img src="/2021/05/05/dc2/050506.png"></p>
+<img src="/2021/05/05/dc2/050506.png" class="">
+
 <p>果不其然，tom登陆成功。查看tom用户下的文件看看有不有什么发现。</p>
-<p><img src="/2021/05/05/dc2/050507.png"></p>
+<img src="/2021/05/05/dc2/050507.png" class="">
+
 <p>虽然发现了flag3.txt，但是读取不了，受到<a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/system/188989.html"><code>rbash</code>环境</a>的限制，需要绕过<code>rbash</code>限制。(查看<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43705814/article/details/111879362">大佬的博客</a>搞定的，之前没接触过，哎，小白一匹)<br>执行以下命令进行绕过</p>
 <pre class="line-numbers language-none"><code class="language-none">BASH_CMDS[a]=/bin/sh;a  注：把/bin/bash给a变量`
 export PATH=$PATH:/bin/    注：将/bin 作为PATH环境变量导出
 export PATH=$PATH:/usr/bin   注：将/usr/bin作为PATH环境变量导出<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p><img src="/2021/05/05/dc2/050508.png"></p>
+<img src="/2021/05/05/dc2/050508.png" class="">
+
 <p>成功拿到flag3.</p>
 <h1 id="su切换用户拿flag4"><a href="#su切换用户拿flag4" class="headerlink" title="su切换用户拿flag4"></a><strong>su切换用户拿flag4</strong></h1><p>根据flag3的提示需要<code>su jerry</code>。</p>
-<p><img src="/2021/05/05/dc2/050509.png"></p>
+<img src="/2021/05/05/dc2/050509.png" class="">
+
 <p>直接在jerry根目录下拿到flag4.</p>
 <h1 id="git提权拿final-flag"><a href="#git提权拿final-flag" class="headerlink" title="git提权拿final-flag"></a><strong>git提权拿final-flag</strong></h1><p>根据提示需要拿到root权限<br>执行命令<code>sudo -l</code>发现git不需要命令具有root权限执行。于是强制进入git交互模式。输入命令</p>
 <pre class="line-numbers language-none"><code class="language-none">sudo git help config
 !/bin/bash<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-<p><img src="/2021/05/05/dc2/050510.png"></p>
+<img src="/2021/05/05/dc2/050510.png" class="">
+
 <p>提权成功拿到final-flag.txt.</p>
 
                 

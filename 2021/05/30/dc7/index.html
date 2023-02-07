@@ -12,7 +12,8 @@ kali
 
 信息收集由目标靶机的MAC地址得到目标IP为192.168.137.103，直接nmap扫描。   
     
-可以知道目标开放了80和22端口，直接进入网站。    ">
+
+可以知道目标开放了80和22端口，直接进入网站。   ">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -375,41 +376,56 @@ kali
 <li>kali  </li>
 </ol>
 <h1 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a><strong>信息收集</strong></h1><p>由目标靶机的MAC地址得到目标IP为192.168.137.103，直接nmap扫描。   </p>
-<p><img src="/2021/05/30/dc7/053002.png">    </p>
+<img src="/2021/05/30/dc7/053002.png" class="">    
+
 <p>可以知道目标开放了80和22端口，直接进入网站。    </p>
-<p><img src="/2021/05/30/dc7/053003.png">    </p>
+<img src="/2021/05/30/dc7/053003.png" class="">    
+
 <p>进入网站发现CMS是drupal 8，在漏洞进行搜索，无果。所以只能查看网站。翻译一下首页的内容。     </p>
 <blockquote>
 <p>欢迎来到DC-7<br>DC-7引入了一些“新”概念，但我将让您弄清楚它们是什么。 :-)<br>尽管此挑战并不是技术性的全部，但如果您需要诉诸于暴力破解或字典攻击，您可能不会成功。<br>您将要做的就是在盒子外面思考。<br>方式在盒子外面。 :-)    </p>
 </blockquote>
 <p>通过翻译内容得知，线索在外部，观察过后发现首页下面有<code>@DC7USER</code>的标志有点可疑，所以直接用搜索引擎搜索。    </p>
-<p><img src="/2021/05/30/dc7/053004.png">    </p>
+<img src="/2021/05/30/dc7/053004.png" class="">    
+
 <p>可以github上有资源，所以进入查看。   </p>
-<p><img src="/2021/05/30/dc7/053005.png">     </p>
+<img src="/2021/05/30/dc7/053005.png" class="">     
+
 <p>在仓库下发现账号密码，登陆发现失败，于是尝试ssh连接，连接成功。    </p>
-<p><img src="/2021/05/30/dc7/053006.png">    </p>
+<img src="/2021/05/30/dc7/053006.png" class="">    
+
 <p>在/home/dc7user下发现两个文件。   </p>
-<p><img src="/2021/05/30/dc7/053007.png">     </p>
+<img src="/2021/05/30/dc7/053007.png" class="">     
+
 <p>在mbox下发现了线索，由内容可以知道这是root用户发给dc7user用户的一封邮箱，并且会以root权限定时执行<code>/opt/scripts/backups.sh</code>脚本。   </p>
-<p><img src="/2021/05/30/dc7/053009.png">     </p>
+<img src="/2021/05/30/dc7/053009.png" class="">     
+
 <p>由内容得知，只是执行一些命令，drush命令是drupal系统中特定的管理工具。由于脚本执行是root权限，所以只要把反弹shell命令写入该脚本即可得到root权限。可以知道www-data用户即网站用户对该脚本具有写入权限。所以现在需要拿到网站的反弹shell。   </p>
 <p>查阅drush相关命令得知<code>drush user-password 用户名 --password="密码"</code>可以修改密码。drupal网站的有默认用户为admin，所以可以更改admin的密码。    </p>
-<p><img src="/2021/05/30/dc7/053010.png">    </p>
+<img src="/2021/05/30/dc7/053010.png" class="">    
+
+
 <h1 id="安装插件拿shell"><a href="#安装插件拿shell" class="headerlink" title="安装插件拿shell"></a><strong>安装插件拿shell</strong></h1><p>由/opt/scripts/backups脚本知，需要进入/var/www/html文件下执行drush命令。修改密码成功。admin/123.com登陆网站成功。    </p>
-<p><img src="/2021/05/30/dc7/053011.png">   </p>
+<img src="/2021/05/30/dc7/053011.png" class="">   
+
 <p>发现可以写入一个网页，但是网页类型没有PHP模式，所以需要下载一个PHP代码的插件即可。<br>php插件下载<a target="_blank" rel="noopener" href="http://drupal.org/project/php">http://drupal.org/project/php</a>.    </p>
-<p><img src="/2021/05/30/dc7/053012.png">     </p>
+<img src="/2021/05/30/dc7/053012.png" class="">     
+
 <p>将下载好的压缩包文件进行安装即可    </p>
-<p><img src="/2021/05/30/dc7/053013.png">       </p>
+<img src="/2021/05/30/dc7/053013.png" class="">       
+
 <p>再把安装好的插件进行选择即可。    </p>
-<p><img src="/2021/05/30/dc7/053015.png">     </p>
+<img src="/2021/05/30/dc7/053015.png" class="">     
+
 <p>将小马写入首页即可。蚁剑连接。连接成功。反弹shell到kali。     </p>
-<p><img src="/2021/05/30/dc7/053016.png">      </p>
+<img src="/2021/05/30/dc7/053016.png" class="">      
+
 <p>反弹成功。    </p>
-<p><img src="/2021/05/30/dc7/053017.png">     </p>
+<img src="/2021/05/30/dc7/053017.png" class="">     
+
 <p>反弹shell写入成功。等定时任务执行即可自动连接。    </p>
 <h1 id="提权"><a href="#提权" class="headerlink" title="提权"></a><strong>提权</strong></h1><p>连接成功。得到flag。    </p>
-<p><img src="/2021/05/30/dc7/053018.png"></p>
+<img src="/2021/05/30/dc7/053018.png" class="">
 
                 
             </div>

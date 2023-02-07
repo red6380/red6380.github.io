@@ -5,8 +5,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="keywords" content="https与双向认证, Red6380">
-    <meta name="description" content="https基础知识​        HTTPS 协议是由HTTP 加上TLS/SSL 协议构建的可进行加密传输、身份认证的网络协议，主要通过数字证书、加密算法、非对称密钥等技术完成互联网数据传输加密，实现互联网传输安全保护。
-​      ">
+    <meta name="description" content="https基础知识​            HTTPS 协议是由HTTP 加上TLS/SSL 协议构建的可进行加密传输、身份认证的网络协议，主要通过数字证书、加密算法、非对称密钥等技术完成互联网数据传输加密，实现互联网传输安全保护。
+​  ">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -379,101 +379,120 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="https基础知识"><a href="#https基础知识" class="headerlink" title="https基础知识"></a>https基础知识</h1><p>​        HTTPS 协议是由HTTP 加上TLS/SSL 协议构建的可进行加密传输、身份认证的网络协议，主要通过数字证书、加密算法、非对称密钥等技术完成互联网数据传输加密，实现互联网传输安全保护。</p>
-<p>​        SSL v1.0 、V2.0、V3.0是较早期使用的，TLS是现在使用的，是由SSL发展而来的。由于协议版本漏洞的原因，现在主要是使用TLS v1.1、TLS v1.2版本进行加密。TLS v1.3由于改动比较大，使用的还教少。</p>
-<p><img src="https/01.png"></p>
-<h1 id="HTTPS协议握手"><a href="#HTTPS协议握手" class="headerlink" title="HTTPS协议握手"></a>HTTPS协议握手</h1><p>​        开启wireshark进行抓包后，命令行执行 <code>curl  https://www.baidu.com</code>（使用curl可以避免产生多余的数据包，也可使用浏览器访问，但是会加载许多资源）。</p>
+                <h1 id="https基础知识"><a href="#https基础知识" class="headerlink" title="https基础知识"></a><strong>https基础知识</strong></h1><p>​            HTTPS 协议是由HTTP 加上TLS/SSL 协议构建的可进行加密传输、身份认证的网络协议，主要通过数字证书、加密算法、非对称密钥等技术完成互联网数据传输加密，实现互联网传输安全保护。</p>
+<p>​            SSL v1.0 、V2.0、V3.0是较早期使用的，TLS是现在使用的，是由SSL发展而来的。由于协议版本漏洞的原因，现在主要是使用TLS v1.1、TLS v1.2版本进行加密。TLS v1.3由于改动比较大，使用的还教少。</p>
+<img src="/2023/02/05/https/01.png" class="">
+
+
+
+<h1 id="HTTPS协议握手"><a href="#HTTPS协议握手" class="headerlink" title="HTTPS协议握手"></a>HTTPS协议握手</h1><p>​            开启wireshark进行抓包后，命令行执行 <code>curl  https://www.baidu.com</code>（使用curl可以避免产生多余的数据包，也可使用浏览器访问，但是会加载许多资源）。</p>
 <ul>
 <li><p>第一步：TCP三次握手。</p>
-<p><img src="https/11.png"></p>
-</li>
+<img src="/2023/02/05/https/11.png" class=""></li>
 <li><p>第二步：客户端发送Client Hello。</p>
-<p><img src="https//02.png"></p>
-</li>
+<img src="/2023/02/05/https/02.png" class=""></li>
 </ul>
 <ul>
 <li><p>第三步：服务端发送 Server Hello。</p>
-<p><img src="https/03.png"></p>
-</li>
+<img src="/2023/02/05/https/03.png" class=""></li>
 </ul>
 <ul>
 <li><p>第三步：服务端发送证书 Certificate、Server Key Exchange、Server Hello Done。</p>
-<p><img src="https/12.png"></p>
-</li>
+<img src="/2023/02/05/https/12.png" class=""></li>
 <li><p>第四步：客户端发送 Client Key Exchage、Change Cipher Spec、Encrypted Handshake Message。</p>
-<p><img src="https/07.png"></p>
-</li>
+<img src="/2023/02/05/https/07.png" class=""></li>
 </ul>
 <ul>
 <li><p>第五步： 服务端发送 New Session Ticket、Change Cipher Spec、Encrypted Handshake Message。</p>
-<p><img src="https/08.png"></p>
-</li>
+<img src="/2023/02/05/https/08.png" class=""></li>
 </ul>
 <ul>
 <li><p>第六步：完成秘钥协商，开始发送数据。</p>
-<p><img src="https/10.png"></p>
-</li>
+<img src="/2023/02/05/https/10.png" class=""></li>
 <li><p>第七步：完成数据发送，4次TCP挥手。（此处的 Encrypted Alert / ACK 为SSL/TLS的挥手）</p>
-<p><img src="https/13.png"></p>
-</li>
+<img src="/2023/02/05/https/13.png" class=""></li>
 </ul>
-<p>​    使用<code>openssl s_client -connect IP:port</code>命令可参考连接网站的证书详情。</p>
-<p><img src="https/14.png"></p>
-<p><img src="https/15.png"></p>
+<p>使用<code>openssl s_client -connect IP:port</code>命令可查看连接网站的证书详情。</p>
+<img src="/2023/02/05/https/14.png" class="">
+
+
+
+<img src="/2023/02/05/https/15.png" class="">
+
+
+
 <h1 id="证书生成"><a href="#证书生成" class="headerlink" title="证书生成"></a>证书生成</h1><ul>
 <li><p>第一步：生成ca证书ca_cert.crt 。</p>
-<pre class="line-numbers language-none"><code class="language-none">openssl req -newkey rsa:2048 -nodes -keyout ca_key.key -x509 -days 365 -out ca_cert.crt -subj "/C=CN/ST=GD/L=SZ/O=test/OU=dev/CN=ca.com/emailAddress=ca@ca.com"<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">openssl req <span class="token parameter variable">-newkey</span> rsa:2048 <span class="token parameter variable">-nodes</span> <span class="token parameter variable">-keyout</span> ca_key.key <span class="token parameter variable">-x509</span> <span class="token parameter variable">-days</span> <span class="token number">365</span> <span class="token parameter variable">-out</span> ca_cert.crt <span class="token parameter variable">-subj</span> <span class="token string">"/C=CN/ST=GD/L=SZ/O=test/OU=dev/CN=ca.com/emailAddress=ca@ca.com"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>-newkey rsa:2048 -nodes -keyout：表示生成不加密的私钥；</p>
 <p>CN值为域名。</p>
 </li>
 <li><p>第二步：生成服务端私钥server_key.key和证书server.crt。</p>
-<pre class="line-numbers language-none"><code class="language-none">//生成私钥。
-openssl genrsa -out server_key.key 2048
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">//生成私钥。
+openssl genrsa <span class="token parameter variable">-out</span> server_key.key <span class="token number">2048</span>
 
 //生成请求文件。
-openssl req -new -key server_key.key -out server.csr -subj "/C=CN/ST=GD/L=SZ/O=test/OU=dev/CN=server.com/emailAddress=server@server.com"
+openssl req <span class="token parameter variable">-new</span> <span class="token parameter variable">-key</span> server_key.key <span class="token parameter variable">-out</span> server.csr <span class="token parameter variable">-subj</span> <span class="token string">"/C=CN/ST=GD/L=SZ/O=test/OU=dev/CN=server.com/emailAddress=server@server.com"</span>
 
 //生成证书文件。
-openssl x509 -req -days 3650 -in server.csr -CA ca_cert.crt -CAkey ca_key.key -CAcreateserial -out server.crt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+openssl x509 <span class="token parameter variable">-req</span> <span class="token parameter variable">-days</span> <span class="token number">3650</span> <span class="token parameter variable">-in</span> server.csr <span class="token parameter variable">-CA</span> ca_cert.crt <span class="token parameter variable">-CAkey</span> ca_key.key <span class="token parameter variable">-CAcreateserial</span> <span class="token parameter variable">-out</span> server.crt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
 <li><p>第三步：生成客户端私钥client_key.key和证书client.crt。</p>
-<pre class="line-numbers language-none"><code class="language-none">//生成私钥。
-openssl genrsa -out client_key.key 2048
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">//生成私钥。
+openssl genrsa <span class="token parameter variable">-out</span> client_key.key <span class="token number">2048</span>
 
 //生成请求文件。
-openssl req -new -key client_key.key -out client.csr -subj "/C=CN/ST=GD/L=SZ/O=test/OU=dev/CN=client.com/emailAddress=client@client.com"
+openssl req <span class="token parameter variable">-new</span> <span class="token parameter variable">-key</span> client_key.key <span class="token parameter variable">-out</span> client.csr <span class="token parameter variable">-subj</span> <span class="token string">"/C=CN/ST=GD/L=SZ/O=test/OU=dev/CN=client.com/emailAddress=client@client.com"</span>
 
 //生成证书文件。
-openssl x509 -req -days 3650 -in client.csr -CA ca_cert.crt -CAkey ca_key.key -CAcreateserial -out client.crt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+openssl x509 <span class="token parameter variable">-req</span> <span class="token parameter variable">-days</span> <span class="token number">3650</span> <span class="token parameter variable">-in</span> client.csr <span class="token parameter variable">-CA</span> ca_cert.crt <span class="token parameter variable">-CAkey</span> ca_key.key <span class="token parameter variable">-CAcreateserial</span> <span class="token parameter variable">-out</span> client.crt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
 </ul>
 <h1 id="单向证书认证"><a href="#单向证书认证" class="headerlink" title="单向证书认证"></a>单向证书认证</h1><p>此处使用phpstudy中的nginx进行证书配置。打开nginx目录下的nginx.conf配置。</p>
-<p><img src="https/16.png"></p>
+<img src="/2023/02/05/https/16.png" class="">
+
+
+
 <p>然后本地点击ca_cert.crt证书进行本地安装即可。</p>
-<p><img src="https/19.png"></p>
+<img src="/2023/02/05/https/19.png" class="">
+
+
+
 <p>本地使用HTTPS协议访问成功。</p>
-<p><img src="https/18.png"></p>
+<img src="/2023/02/05/https/18.png" class="">
+
+
+
 <h1 id="双向证书认证"><a href="#双向证书认证" class="headerlink" title="双向证书认证"></a>双向证书认证</h1><p>nginx开启双向认证配置。</p>
-<p><img src="https/20.png"></p>
+<img src="/2023/02/05/https/20.png" class="">
+
+
+
 <p>此时浏览器访问出现400，显示未发送证书。此时需要携带客户端证书。</p>
 <p>需要把client.crt与client_key.key转化为.p12格式的证书再导入浏览器中。</p>
-<pre class="line-numbers language-none"><code class="language-none">//此处需要输入密码对证书进行加密，后续导入浏览器中需要使用此密码
-openssl pkcs12 -export -in client.crt -inkey client_key.key -out client.p12<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">//此处需要输入密码对证书进行加密，后续导入浏览器中需要使用此密码
+openssl pkcs12 <span class="token parameter variable">-export</span> <span class="token parameter variable">-in</span> client.crt <span class="token parameter variable">-inkey</span> client_key.key <span class="token parameter variable">-out</span> client.p12<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 
 
 <p>将client.p12证书导入浏览器中即可。</p>
-<p><img src="https/22.png"></p>
+<img src="/2023/02/05/https/22.png" class="">
+
+
+
 <p>此时重新访问时选择导入的证书访问即可成功。</p>
-<p><img src="https/18.png"></p>
+<img src="/2023/02/05/https/18.png" class="">
+
+
+
 <p>也可使用curl命令进行访问。</p>
-<pre class="line-numbers language-none"><code class="language-none">//此处的server.com为证书生成时服务端的CN域名值。
-//需要本地配置C:\Windows\System32\drivers\etc\hosts文件。
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">//此处的server.com为证书生成时服务端的CN域名值。
+//需要本地配置C:<span class="token punctuation">\</span>Windows<span class="token punctuation">\</span>System32<span class="token punctuation">\</span>drivers<span class="token punctuation">\</span>etc<span class="token punctuation">\</span>hosts文件。
 
-curl --cert client.crt --key client_key.key --cacert ca_cert.crt https://server.com<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token function">curl</span> <span class="token parameter variable">--cert</span> client.crt <span class="token parameter variable">--key</span> client_key.key <span class="token parameter variable">--cacert</span> ca_cert.crt https://server.com<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<p><img src="https/23.png"></p>
+<img src="/2023/02/05/https/23.png" class="">
 
                 
             </div>
