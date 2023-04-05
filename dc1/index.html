@@ -28,7 +28,7 @@ drupal 7.x漏洞拿flag1首先搭建好靶场。这次一次黑盒靶场测试�
 
 
     <title>Vulnhub系列之DC1靶场详解 | Red6380</title>
-    <link rel="icon" type="image/jpeg" href="/medias/log02.jpg">
+    <link rel="icon" type="image/jpeg" href="/medias/logo.jpg">
     
 
 
@@ -67,13 +67,14 @@ drupal 7.x漏洞拿flag1首先搭建好靶场。这次一次黑盒靶场测试�
 
 
 <body>
+	
     <header class="navbar-fixed">
     <nav id="headNav" class="bg-color nav-transparent">
         <div id="navContainer" class="nav-wrapper container">
             <div class="brand-logo">
                 <a href="/" class="waves-effect waves-light">
                     
-                    <img src="/medias/log02.jpg" class="logo-img" alt="LOGO">
+                    <img src="/medias/logo.jpg" class="logo-img" alt="LOGO">
                     
                     <span class="logo-span">Red6380</span>
                 </a>
@@ -140,7 +141,7 @@ drupal 7.x漏洞拿flag1首先搭建好靶场。这次一次黑盒靶场测试�
   
   <li class="hide-on-med-and-down nav-item">
     
-    <a href="/contact" class="waves-effect waves-light">
+    <a href="/contacts" class="waves-effect waves-light">
       
       <i class="fas fa-comments" style="zoom: 0.6;"></i>
       
@@ -177,7 +178,7 @@ drupal 7.x漏洞拿flag1首先搭建好靶场。这次一次黑盒靶场测试�
 
     <div class="mobile-head bg-color">
         
-        <img src="/medias/log02.jpg" class="logo-img circle responsive-img">
+        <img src="/medias/logo.jpg" class="logo-img circle responsive-img">
         
         <div class="logo-name">Red6380</div>
         <div class="logo-desc">
@@ -246,7 +247,7 @@ drupal 7.x漏洞拿flag1首先搭建好靶场。这次一次黑盒靶场测试�
         
         <li class="m-nav-item">
 	  
-		<a href="/contact" class="waves-effect waves-light">
+		<a href="/contacts" class="waves-effect waves-light">
 			
 			    <i class="fa-fw fas fa-comments"></i>
 			
@@ -1250,14 +1251,6 @@ $(function () {
     
 
     <!-- 雪花特效 -->
-     
-        <script type="text/javascript">
-            // 只在桌面版网页启用特效
-            var windowWidth = $(window).width();
-            if (windowWidth > 768) {
-                document.write('<script type="text/javascript" src="/libs/others/snow.js"><\/script>');
-            }
-        </script>
     
 
     <!-- 鼠标星星特效 -->
@@ -1303,6 +1296,23 @@ $(function () {
     
     <script src="/libs/instantpage/instantpage.js" type="module"></script>
     
+	 var OriginTitle = document.title;
+ var titleTime;
+ document.addEventListener('visibilitychange', function () {
+     if (document.hidden) {
+         $('[rel="icon"]').attr('href', "https://cdn.jsdelivr.net/gh/guixinchn/image/blog/favicon.png");
+         document.title = '我相信你还会回来的！';
+         clearTimeout(titleTime);
+     }
+     else {
+         $('[rel="icon"]').attr('href', "https://cdn.jsdelivr.net/gh/guixinchn/image/blog/favicon.png");
+         document.title = '哈哈，我就知道！' + OriginTitle;
+         titleTime = setTimeout(function () {
+             document.title = OriginTitle;
+         }, 2000);
+     }
+ });
+
 
 </body>
 

@@ -18,7 +18,7 @@
 
 
     <title>关于 | Red6380</title>
-    <link rel="icon" type="image/jpeg" href="/medias/log02.jpg">
+    <link rel="icon" type="image/jpeg" href="/medias/logo.jpg">
     
 
 
@@ -57,13 +57,14 @@
 
 
 <body>
+	
     <header class="navbar-fixed">
     <nav id="headNav" class="bg-color nav-transparent">
         <div id="navContainer" class="nav-wrapper container">
             <div class="brand-logo">
                 <a href="/" class="waves-effect waves-light">
                     
-                    <img src="/medias/log02.jpg" class="logo-img" alt="LOGO">
+                    <img src="/medias/logo.jpg" class="logo-img" alt="LOGO">
                     
                     <span class="logo-span">Red6380</span>
                 </a>
@@ -130,7 +131,7 @@
   
   <li class="hide-on-med-and-down nav-item">
     
-    <a href="/contact" class="waves-effect waves-light">
+    <a href="/contacts" class="waves-effect waves-light">
       
       <i class="fas fa-comments" style="zoom: 0.6;"></i>
       
@@ -167,7 +168,7 @@
 
     <div class="mobile-head bg-color">
         
-        <img src="/medias/log02.jpg" class="logo-img circle responsive-img">
+        <img src="/medias/logo.jpg" class="logo-img circle responsive-img">
         
         <div class="logo-name">Red6380</div>
         <div class="logo-desc">
@@ -236,7 +237,7 @@
         
         <li class="m-nav-item">
 	  
-		<a href="/contact" class="waves-effect waves-light">
+		<a href="/contacts" class="waves-effect waves-light">
 			
 			    <i class="fa-fw fas fa-comments"></i>
 			
@@ -282,7 +283,7 @@
         <div class="brand">
             <div class="title center-align">
                 
-                纸上得来终觉浅，绝知此事要躬行
+                纸上得来终觉浅,绝知此事要躬行
                 
             </div>
 
@@ -510,7 +511,7 @@
                 type: 'pie',
                 radius: '50%',
                 color: ['#6772e5', '#ff9e0f', '#fa755a', '#3ecf8e', '#82d3f4', '#ab47bc', '#525f7f', '#f51c47', '#26A69A'],
-                data: [{"name":"靶场","value":7},{"name":"java","value":2},{"name":"https","value":1},{"name":"java代码审计","value":1},{"name":"反序列化","value":2},{"name":"协议","value":1},{"name":"证书","value":1}],
+                data: [{"name":"靶场","value":7},{"name":"java","value":2},{"name":"java代码审计","value":1},{"name":"https","value":1},{"name":"反序列化","value":2},{"name":"协议","value":1},{"name":"证书","value":1}],
                 itemStyle: {
                     emphasis: {
                         shadowBlur: 10,
@@ -534,7 +535,7 @@
         xAxis: [
             {
                 type: 'category',
-                data: ["靶场","反序列化","java","https","协议","证书","java代码审计"]
+                data: ["靶场","反序列化","java","java代码审计","https","协议","证书"]
             }
         ],
         yAxis: [
@@ -835,14 +836,6 @@ $(function () {
     
 
     <!-- 雪花特效 -->
-     
-        <script type="text/javascript">
-            // 只在桌面版网页启用特效
-            var windowWidth = $(window).width();
-            if (windowWidth > 768) {
-                document.write('<script type="text/javascript" src="/libs/others/snow.js"><\/script>');
-            }
-        </script>
     
 
     <!-- 鼠标星星特效 -->
@@ -888,6 +881,23 @@ $(function () {
     
     <script src="/libs/instantpage/instantpage.js" type="module"></script>
     
+	 var OriginTitle = document.title;
+ var titleTime;
+ document.addEventListener('visibilitychange', function () {
+     if (document.hidden) {
+         $('[rel="icon"]').attr('href', "https://cdn.jsdelivr.net/gh/guixinchn/image/blog/favicon.png");
+         document.title = '我相信你还会回来的！';
+         clearTimeout(titleTime);
+     }
+     else {
+         $('[rel="icon"]').attr('href', "https://cdn.jsdelivr.net/gh/guixinchn/image/blog/favicon.png");
+         document.title = '哈哈，我就知道！' + OriginTitle;
+         titleTime = setTimeout(function () {
+             document.title = OriginTitle;
+         }, 2000);
+     }
+ });
+
 
 </body>
 
