@@ -8,6 +8,18 @@
     <meta name="description" content="外网信息收集
 
 
+table th:first-of-type {
+    width: 50%;
+}
+table th:nth-of-type(2) {
+    width: 50%;
+}
+
+
+  
+
+
+
 
 
 IP
@@ -15,19 +27,7 @@ Ports
 
 
 
-192.168.x.120
-22,80
-
-
-192.168.x.121
-80,135,139,445
-
-
-192.168.x.122
-22, 1194
-
-
-192.168.x.121分别对有we">
+19">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -393,26 +393,40 @@ Ports
             <div id="articleContent">
                 <h1 id="外网信息收集"><a href="#外网信息收集" class="headerlink" title="外网信息收集"></a>外网信息收集</h1><img src="/oscp1/map.png" class="">
 
+<style>
+table th:first-of-type {
+    width: 50%;
+}
+table th:nth-of-type(2) {
+    width: 50%;
+}
+</style>
+<div style="text-align: center;">
+  <div style="display: inline-block; text-align: left;">
+
+
 <table>
 <thead>
 <tr>
-<th>IP</th>
+<th><div style="width:400px">IP</div></th>
 <th>Ports</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>192.168.x.120</td>
-<td>22,80</td>
+<td>22、80</td>
 </tr>
 <tr>
 <td>192.168.x.121</td>
-<td>80,135,139,445</td>
+<td>80、135、139、445</td>
 </tr>
 <tr>
 <td>192.168.x.122</td>
-<td>22, 1194</td>
+<td>22,、1194</td>
 </tr>
 </tbody></table>
+</div></div>
+
 <h1 id="192-168-x-121"><a href="#192-168-x-121" class="headerlink" title="192.168.x.121"></a>192.168.x.121</h1><p>分别对有web服务的120、121机器进行目录扫描，120机器未发现攻击点，但在121中有登录点，进行测试在用户名处发现sql注入并且是MSsql，可直接使用xp_cmdshell进行命令执行。</p>
 <p>使用msfvenom生成exe，并使用msfconsole监听模块链接反弹的shell。</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">生成exe木马命令
@@ -482,42 +496,47 @@ bind_port = 7000<span aria-hidden="true" class="line-numbers-rows"><span></span>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">hydra <span class="token parameter variable">-l</span> offsec <span class="token parameter variable">-P</span> /usr/share/wordlists/rockyou.txt <span class="token parameter variable">-M</span> ip.txt <span class="token function">ssh</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>122机器爆破成功，账号密码为offsec/password，直接ssh登录，在当前目录下发现flag文件local.txt</p>
-<h1 id="内网信息收集"><a href="#内网信息收集" class="headerlink" title="内网信息收集"></a>内网信息收集</h1><table>
+<h1 id="内网信息收集"><a href="#内网信息收集" class="headerlink" title="内网信息收集"></a>内网信息收集</h1><div style="text-align: center;">
+  <div style="display: inline-block; text-align: left;">
+
+<table>
 <thead>
 <tr>
-<th>IP</th>
-<th>Ports</th>
+<th align="left"><div style="width:400px">IP</div></th>
+<th align="center">Ports</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>172.16.x.10</td>
-<td>53,88,135,139,445,5985</td>
+<td align="left">172.16.x.10</td>
+<td align="center">53、88、135、139、445、5985</td>
 </tr>
 <tr>
-<td>172.16.x.11</td>
-<td>135,445,5985</td>
+<td align="left">172.16.x.11</td>
+<td align="center">135、445、5985</td>
 </tr>
 <tr>
-<td>172.16.x.12</td>
-<td>139,445,3389,5985</td>
+<td align="left">172.16.x.12</td>
+<td align="center">139、445、3389、5985</td>
 </tr>
 <tr>
-<td>172.16.x.13</td>
-<td>135,445,5985</td>
+<td align="left">172.16.x.13</td>
+<td align="center">135、445、5985</td>
 </tr>
 <tr>
-<td>172.16.x.14</td>
-<td>22</td>
+<td align="left">172.16.x.14</td>
+<td align="center">22</td>
 </tr>
 <tr>
-<td>172.16.x.82</td>
-<td>135,445,3389</td>
+<td align="left">172.16.x.82</td>
+<td align="center">135、445、3389</td>
 </tr>
 <tr>
-<td>172.16.x.83</td>
-<td>135,445,5985</td>
+<td align="left">172.16.x.83</td>
+<td align="center">135、445、5985</td>
 </tr>
 </tbody></table>
+</div></div>
+
 <p>通过外网得到的信息有</p>
 <ol>
 <li>域用户：joe、leon、mario、offsec、peach、wario、yoshi</li>
@@ -525,7 +544,8 @@ bind_port = 7000<span aria-hidden="true" class="line-numbers-rows"><span></span>
 <li>mario用户的ssh私钥登录文件</li>
 </ol>
 <h1 id="172-16-x-14"><a href="#172-16-x-14" class="headerlink" title="172.16.x.14"></a>172.16.x.14</h1><p>通过对内网的扫描发现只有14机器开放了22端口，故直接使用mario的私钥进行登录尝试，登录成功</p>
-<p><img src="OSCP1%5C10.png"></p>
+<img src="/oscp1/10.png" class="">
+
 <p>发现flag文件local.txt，此机器无法提权至root。</p>
 <h1 id="172-16-x-11"><a href="#172-16-x-11" class="headerlink" title="172.16.x.11"></a>172.16.x.11</h1><p>对开放了5985端口的机器使用域用户<code>joe/Flowers1</code>进行登录，只有11机器可以登录成功</p>
 <p>通过<code>net localgroup Administrators</code>命令可以列出本地管理员用户组的用户，joe在管理员用户组中。</p>
