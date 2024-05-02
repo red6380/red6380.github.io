@@ -72,9 +72,9 @@ Ports
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 5.4.2">
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="Red6380" type="application/atom+xml">
+
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
-<link rel="alternate" href="/atom.xml" title="Red6380" type="application/atom+xml">
 </head>
 
 
@@ -366,14 +366,14 @@ Ports
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    110
+                    524
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    2 分
                 </div>
                 
 
@@ -430,7 +430,7 @@ table th:nth-of-type(2) {
 </tr>
 <tr>
 <td>192.168.x.247</td>
-<td>80、135、139、443、33889、5985</td>
+<td>80、135、139、443、445、33889、5985</td>
 </tr>
 <tr>
 <td>192.168.x.248</td>
@@ -447,7 +447,30 @@ table th:nth-of-type(2) {
 </tbody></table>
 </div></div>
 
-<h1 id="192-168-x-250"><a href="#192-168-x-250" class="headerlink" title="192.168.x.250"></a>192.168.x.250</h1>
+<h1 id="192-168-x-248"><a href="#192-168-x-248" class="headerlink" title="192.168.x.248"></a>192.168.x.248</h1><p>使用账号密码登录250机器，查看是管理员权限但不在域中，未发现可用信息，使用此账号密码对其他机器进行撞库无果。</p>
+<p>对开放445端口的机器使用<code>crackmapexec</code>工具进行爆破，发现248机器可以使用匿名<code>anonymous/anonymous</code>进行登录。<img src="/oscp2/3.png" class=""></p>
+<p>在共享盘中发现以下信息</p>
+<ol>
+<li><code>transfer\DB-back (1)\New Folder\Emma\Documents\Database.kdbx</code></li>
+<li><code>transfer\r14_2022\build\DNN\wwwroot\</code>是网站根目录，包括web.config配置文件</li>
+</ol>
+<p>通过<code>2</code>可以直接上传aspx木马文件至网站根目录下getshell，但是是web权限，没啥作用，有没有发现提权点。还在web.config文件中发现mssql数据库账户密码<code>dnnuser/DotNetNukeDatabasePassword!</code></p>
+<p>分析<code>1</code>中的文件，将kdbx文件转为txt文件后进行爆破密码为<code>welcome1</code></p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">keepass2john Database.kdbx <span class="token operator">&gt;</span>Database.txt
+john <span class="token parameter variable">--wordlist</span><span class="token operator">=</span>/usr/share/wordlists/rockyou.txt Database.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>直接使用keepassxc命令打开kdbx文件并输入密码，得到windows用户信息：<code>bo/Luigi=Papal1963</code>、<code>emma/SomersetVinyl1!</code>、旧密码<code>HabitsAgesEnd123</code>;数据库信息：<code>sa/SAPassword_1998</code></p>
+<img src="/oscp2/4.png" class="">
+
+<p>使用<code>remmnia</code>登录emma用户，但此机器不在域中在桌面有flag文件local.txt。上传winPEASx64.exe执行，发现管理员用户mark、并且在环境变量中发现AppKey: !8@aBRBYdb3! 尝试使用<code>mark/!8@aBRBYdb3!</code>登录成功，桌面有proof.txt文件。</p>
+<h1 id="192-168-x-245"><a href="#192-168-x-245" class="headerlink" title="192.168.x.245"></a>192.168.x.245</h1><p>使用账号密码登录250机器，查看是管理员权限但不在域中，未发现可用信息，使用此账号密码对其他机器进行撞库无果。</p>
+<p>使用<code>dirsearch</code>对web服务进行目录扫描，发现245机器有任意文件读取漏洞。</p>
+<img src="/oscp2/1.png" class="">
+
+<img src="/oscp2/2.png" class="">
+
+<p>通过查看发现用户有offsec、miranda、steven、mark、anita</p>
+
                 
             </div>
             <hr/>
